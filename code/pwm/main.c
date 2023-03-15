@@ -5,6 +5,8 @@
 #define F_CPU 8000000UL
 #include <util/delay.h>
 
+#include <math.h>
+
 #define BAUDRATE 8			//57.6k bps at 8MHz
 #define water_p1 OCR1A
 
@@ -14,16 +16,22 @@ void uart_tx(unsigned char);
 unsigned char uart_rx(void);
 int ascii_to_numeric(char input[], int);
 void pwm_init(void);
+int numeric_to_percentage(int);
 
 int output[4];
 
 int main(void)
 {
-	char input[4];
-	uint16_t numeric_value = 0;
-	
+	char input[3];
+	int numeric_value = 0;
+	uint16_t percentage = 0;
+
 	pwm_init();
 	usart_init();
+
+	/*uint8_t upper_byte = 0;
+	uint8_t lower_byte = 0;*/
+
 
 	while (1)
 	{
@@ -32,13 +40,26 @@ int main(void)
 			input[length] = uart_rx();
 			uart_tx(input[length]);
 			length++;
-		} while ((length < 5) && (input[length-1] != '\r'));
+		} while ((length < 4) && (input[length-1] != '\r'));
 		
 		
 		numeric_value = ascii_to_numeric(input, length-1);
-		//uart_tx(numeric_value);
-		water_p1 = numeric_value;
+		
+/*upper_byte = (numeric_value >> 8) & 0xFF;
+lower_byte = numeric_value & 0xFF;
 
+uart_tx(upper_byte);
+uart_tx(lower_byte);*/
+		
+		percentage = numeric_to_percentage(numeric_value);
+	
+/*upper_byte = (percentage >> 8) & 0xFF;
+lower_byte = percentage & 0xFF;		
+		
+uart_tx(upper_byte);
+uart_tx(lower_byte);*/
+
+		water_p1 = percentage;
 	}
 	return 0;
 }
@@ -78,9 +99,20 @@ void pwm_init(void){
 
 
 int ascii_to_numeric(char input[], int length){
-	uint16_t value = 0;
+	int value = 0;
 	for (int i = 0; i < length; i++) {
 		value = value * 10 + (input[i] - '0');
 	}
 	return value;
+}
+
+int numeric_to_percentage(int numeric_value ){
+	int percentage = 0;
+	
+	//percentage = 1023 * (numeric_value/100);
+//percentage = (unint16_t) (1023 * numeric_value;
+	//percentage = ((float)numeric_value / 100.0 * 1023.0);
+	percentage = (uint16_t)((uint32_t)numeric_value * 1023 / 100) & 0xFFFF;
+	
+	return percentage;
 }

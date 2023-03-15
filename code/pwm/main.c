@@ -5,8 +5,11 @@
 #define F_CPU 8000000UL
 #include <util/delay.h>
 
+#include <math.h>
+
 #define BAUDRATE 8			//57.6k bps at 8MHz
 #define water_p1 OCR1A
+
 
 void usart_init(void);
 void uart_tx(unsigned char);
@@ -26,6 +29,10 @@ int main(void)
 	pwm_init();
 	usart_init();
 
+	/*uint8_t upper_byte = 0;
+	uint8_t lower_byte = 0;*/
+
+
 	while (1)
 	{
 		int length = 0;
@@ -35,9 +42,23 @@ int main(void)
 			length++;
 		} while ((length < 4) && (input[length-1] != '\r'));
 		
-		numeric_value = ascii_to_numeric(input, length-1);
-		percentage = numeric_to_percentage(numeric_value);
 		
+		numeric_value = ascii_to_numeric(input, length-1);
+		
+/*upper_byte = (numeric_value >> 8) & 0xFF;
+lower_byte = numeric_value & 0xFF;
+
+uart_tx(upper_byte);
+uart_tx(lower_byte);*/
+		
+		percentage = numeric_to_percentage(numeric_value);
+	
+/*upper_byte = (percentage >> 8) & 0xFF;
+lower_byte = percentage & 0xFF;		
+		
+uart_tx(upper_byte);
+uart_tx(lower_byte);*/
+
 		water_p1 = percentage;
 	}
 	return 0;
@@ -76,6 +97,7 @@ void pwm_init(void){
 	TCCR1B |= (1 << CS10);
 }
 
+
 int ascii_to_numeric(char input[], int length){
 	int value = 0;
 	for (int i = 0; i < length; i++) {
@@ -86,6 +108,11 @@ int ascii_to_numeric(char input[], int length){
 
 int numeric_to_percentage(int numeric_value ){
 	int percentage = 0;
+	
+	//percentage = 1023 * (numeric_value/100);
+//percentage = (unint16_t) (1023 * numeric_value;
+	//percentage = ((float)numeric_value / 100.0 * 1023.0);
 	percentage = (uint16_t)((uint32_t)numeric_value * 1023 / 100) & 0xFFFF;
+	
 	return percentage;
 }

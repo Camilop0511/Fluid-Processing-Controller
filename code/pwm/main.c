@@ -12,7 +12,7 @@
 void usart_init(void);
 void uart_tx(unsigned char);
 unsigned char uart_rx(void);
-int ascii_to_numeric(char input[]);
+int ascii_to_numeric(char input[], int);
 void pwm_init(void);
 
 int output[4];
@@ -27,15 +27,16 @@ int main(void)
 
 	while (1)
 	{
-		// Wait for 4 characters input
-		for (int i = 0; i < 4; i++) {
-			input[i] = uart_rx();
-			uart_tx(input[i]);
-		}
-
-		numeric_value = ascii_to_numeric(input);
-		uart_tx(numeric_value);
-
+		int length = 0;
+		do{
+			input[length] = uart_rx();
+			uart_tx(input[length]);
+			length++;
+		} while ((length < 5) && (input[length-1] != '\r'));
+		
+		
+		numeric_value = ascii_to_numeric(input, length-1);
+		//uart_tx(numeric_value);
 		water_p1 = numeric_value;
 
 	}
@@ -76,9 +77,9 @@ void pwm_init(void){
 }
 
 
-int ascii_to_numeric(char input[]){
+int ascii_to_numeric(char input[], int length){
 	uint16_t value = 0;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < length; i++) {
 		value = value * 10 + (input[i] - '0');
 	}
 	return value;

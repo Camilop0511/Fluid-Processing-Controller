@@ -8,30 +8,40 @@
 #define BAUDRATE 8			//57.6k bps at 8MHz
 #define water_p1 OCR1A
 #define water_p2 OCR1B
+#define h_resis OCR0
 
 void usart_init(void);
 void uart_tx(unsigned char);
 unsigned char uart_rx(void);
 int ascii_to_numeric(char input[], int);
-void pwm_init_p(void);
-int numeric_to_percentage(int);
-
+int numeric_to_percentage_wps(int);
+int numeric_to_percentage_h_res(int);
 int ascii_input(void);
+void pwm_init_p(void);
+void pwm_init_r(void);
 
 int main(void)
 {
+	int numeric_value = 0;
 	uint16_t percentage = 0;
 	
 	pwm_init_p();
+	pwm_init_r();
 	usart_init();
 
 	while (1)
 	{
-		percentage = ascii_input();
+		numeric_value = ascii_input();
+		percentage = numeric_to_percentage_wps(numeric_value);		
 		water_p1 = percentage;
 		
-		percentage = ascii_input();
+		numeric_value = ascii_input();
+		percentage = numeric_to_percentage_wps(numeric_value);
 		water_p2 = percentage;
+		
+		numeric_value = ascii_input();
+		percentage = numeric_to_percentage_h_res(numeric_value);
+		h_resis = percentage;
 		
 	}
 	return 0;
@@ -67,6 +77,12 @@ void pwm_init_p(void){
 	TCCR1B |= (1 << WGM12) | (1 << CS10); // Set the prescaler value to no prescaling
 }
 
+void pwm_init_r(){
+	DDRB |= (1 << PB0);  // Set PB0 (OC0) as output pin
+	
+	TCCR0 |= (1 << COM01) | (1 << COM00) | (1 << WGM01) | (1 << WGM00); //COM00 inverts the signal
+	TCCR0 |= (1 << CS00); // Set the prescaler value to no prescaling
+}
 
 int ascii_to_numeric(char input[], int length){
 	int value = 0;
@@ -76,9 +92,15 @@ int ascii_to_numeric(char input[], int length){
 	return value;
 }
 
-int numeric_to_percentage(int numeric_value ){
+int numeric_to_percentage_wps(int numeric_value ){
 	int percentage = 0;
 	percentage = (uint16_t)((uint32_t)numeric_value * 1023 / 100) & 0xFFFF;
+	return percentage;
+}
+
+int numeric_to_percentage_h_res(int numeric_value ){
+	int percentage = 0;
+	percentage = (numeric_value * 256) / 100;
 	return percentage;
 }
 
@@ -95,7 +117,6 @@ int ascii_input(void){
 	} while ((length < 4) && (input[length-1] != '\r'));
 	
 	numeric_value = ascii_to_numeric(input, length-1);
-	percentage = numeric_to_percentage(numeric_value);
-	
-	return percentage;
+
+	return numeric_value;
 }

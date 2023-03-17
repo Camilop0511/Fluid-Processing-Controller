@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <avr/interrupt.h>
-#define F_CPU 1000000L
+#define F_CPU 8000000L
 #include <util/delay.h>
 
-#define BAUDRATE 0
+#define BAUDRATE 8
 #define CS_ADC (1 << PINE0);
 #define RD_ADC (1 << PINE1);
 #define WR_ADC (1 << PINE2);

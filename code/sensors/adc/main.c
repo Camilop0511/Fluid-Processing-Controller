@@ -5,34 +5,32 @@
 #define F_CPU 8000000L
 #include <util/delay.h>
 
+//Define ADC control pins
 #define BAUDRATE 8
-#define CS_ADC (1 << PINE0);
-#define RD_ADC (1 << PINE1);
-#define WR_ADC (1 << PINE2);
+#define CS_ADC PINE0
+#define RD_ADC PINE1
+#define WR_ADC PINE2
 
-//volatile uint8_t int_flag = 0;
-char adc_data; 
-
-
+//Function prototypes
 void usart_init(void);
 void usart_tx(unsigned char);
 void adc_init(void);
 void adc_write (void);
 void INT0_init(void);
 
+//Global variable
+char adc_data; 
+
 int main (void)
 {
-	//char adc_data;
-	
-	
-	//DDRC |= (1 << PC0);
-	
+	//Initializes USAR, ADC, and interrupt
 	usart_init();
 	adc_init();
 	INT0_init();
 	
-	adc_write();
+	adc_write();		//Trigger ADC conversion
 	
+	//Continuously read and transmit ADC data
 	while(1){	
 		usart_tx(adc_data);
 		_delay_ms(100);
@@ -45,53 +43,40 @@ int main (void)
 
 //Initializes USART
 void usart_init (void){
-	UBRRL=BAUDRATE;								//sets baud rate
-	UCSRB|=(1<<TXEN)|(1<<RXEN);					//enables receiver and transmitter
-	UCSRC|=(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);	// 8bit data format
+	UBRRL=BAUDRATE;								
+	UCSRB|=(1<<TXEN)|(1<<RXEN);					
+	UCSRC|=(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);	
 }
 
 //Transmits data to USART
 void usart_tx (unsigned char data){
-	while (!( UCSRA & (1<<UDRE)));            // bit mask to check if UDRE bit is set (set = while (0), not set = while (1))
-	UDR = data;                             // loads data to UDR register
+	while (!( UCSRA & (1<<UDRE)));            
+	UDR = data;                             
 }
 
-//Initialized ADC
+//Initializes ADC control pins and set input/output pins 
 void adc_init(void){
-	DDRE |= CS_ADC;  // Set pin 0 as an output
-	DDRE |= RD_ADC;  // Set pin 1 as an output
-	DDRE |= WR_ADC;  // Set pin 2 as an output
-	DDRA = 0x0;		// Set PORTA as input
+	DDRE |= (1 << CS_ADC);  
+	DDRE |= (1 << RD_ADC);  
+	DDRE |= (1 << WR_ADC); 
+	DDRA = 0x0;		
 	
-	PORTE |= CS_ADC;  // Output a high signal on pin 0
-	PORTE |= RD_ADC;  // Output a high signal on pin 1
-	PORTE |= WR_ADC;  // Output a high signal on pin 2
+	PORTE |= (1 << CS_ADC);  
+	PORTE |= (1 << RD_ADC);  
+	PORTE |= (1 <<  WR_ADC);  
 }
 
-//Reads value from ADC
-void adc_write(void){
-	//char adc_out;
-	
+//Triggers ADC conversion
+void adc_write(void){	
 	//Writing Cycle
-	PORTE &= ~CS_ADC;  // Output a low signal on pin 0
-	PORTE &= ~WR_ADC;  // Output a low signal on pin 2
-	PORTE |= WR_ADC;  // Output a high signal on pin 2
-	PORTE |= CS_ADC;  // Output a high signal on pin 0
-	
-	//_delay_ms(1);
-	
-	/*//Reading Cycle
-	PORTE &= ~CS_ADC;  // Output a low signal on pin 0
-	PORTE &= ~RD_ADC;  // Output a low signal on pin 1
-	adc_out = PINA;
-	PORTE |= RD_ADC;  // Output a high signal on pin 1
-	PORTE |= CS_ADC;  // Output a high signal on pin 0*/
-	
-	//return adc_out;
+	PORTE &= ~(1 << CS_ADC);  
+	PORTE &= ~(1 << WR_ADC);  
+	PORTE |= (1 <<  WR_ADC);  
+	PORTE |= (1 << CS_ADC); 
 }
 
+//Initializes external interrupt 0 for reading ADC data
 void INT0_init(void){
-	
 	// Sets up INT0 to trigger on falling edge
 	MCUCR |= (1 << ISC01);
 	MCUCR &= ~(1 << ISC00);
@@ -100,22 +85,19 @@ void INT0_init(void){
 	sei();					// Enable global interrupts
 }
 
+//Interrupt service routine for reading ADC data
 ISR(INT0_vect)
 {
 	//Reading Cycle
-	PORTE &= ~CS_ADC;  // Output a low signal on pin 0
-	PORTE &= ~RD_ADC;  // Output a low signal on pin 1
+	PORTE &= ~(1 << CS_ADC);  // Output a low signal on pin 0
+	PORTE &= ~(1 << RD_ADC);  // Output a low signal on pin 1
 	adc_data = PINA;
-	PORTE |= RD_ADC;  // Output a high signal on pin 1
-	PORTE |= CS_ADC;  // Output a high signal on pin 0
-
-	//adc_write();
-	// Set the interrupt flag to indicate that an interrupt has occurred
-	//int_flag = 1;
+	PORTE |= (1 << RD_ADC);  // Output a high signal on pin 1
+	PORTE |= (1 << CS_ADC);  // Output a high signal on pin 0
 	
 	//Writing Cycle
-	PORTE &= ~CS_ADC;  // Output a low signal on pin 0
-	PORTE &= ~WR_ADC;  // Output a low signal on pin 2
-	PORTE |= WR_ADC;  // Output a high signal on pin 2
-	PORTE |= CS_ADC;  // Output a high signal on pin 0
+	PORTE &= ~(1 << CS_ADC);  // Output a low signal on pin 0
+	PORTE &= ~(1 << WR_ADC);  // Output a low signal on pin 2
+	PORTE |= (1 <<  WR_ADC);  // Output a high signal on pin 2
+	PORTE |= (1 << CS_ADC);  // Output a high signal on pin 0
 }

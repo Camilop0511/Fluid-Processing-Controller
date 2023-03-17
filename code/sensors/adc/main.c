@@ -7,9 +7,9 @@
 
 //Define ADC control pins
 #define BAUDRATE 8
-#define CS_ADC PINE0
-#define RD_ADC PINE1
-#define WR_ADC PINE2
+#define CS_ADC PINC7
+#define RD_ADC PINC6
+#define WR_ADC PINC5
 
 //Function prototypes
 void usart_init(void);
@@ -56,23 +56,23 @@ void usart_tx (unsigned char data){
 
 //Initializes ADC control pins and set input/output pins 
 void adc_init(void){
-	DDRE |= (1 << CS_ADC);  
-	DDRE |= (1 << RD_ADC);  
-	DDRE |= (1 << WR_ADC); 
+	DDRC |= (1 << CS_ADC);  
+	DDRC |= (1 << RD_ADC);  
+	DDRC |= (1 << WR_ADC); 
 	DDRA = 0x0;		
 	
-	PORTE |= (1 << CS_ADC);  
-	PORTE |= (1 << RD_ADC);  
-	PORTE |= (1 <<  WR_ADC);  
+	PORTC |= (1 << CS_ADC);  
+	PORTC |= (1 << RD_ADC);  
+	PORTC |= (1 <<  WR_ADC);  
 }
 
 //Triggers ADC conversion
 void adc_write(void){	
 	//Writing Cycle
-	PORTE &= ~(1 << CS_ADC);  
-	PORTE &= ~(1 << WR_ADC);  
-	PORTE |= (1 <<  WR_ADC);  
-	PORTE |= (1 << CS_ADC); 
+	PORTC &= ~(1 << CS_ADC);  
+	PORTC &= ~(1 << WR_ADC);  
+	PORTC |= (1 <<  WR_ADC);  
+	PORTC |= (1 << CS_ADC); 
 }
 
 //Initializes external interrupt 0 for reading ADC data
@@ -89,15 +89,15 @@ void INT0_init(void){
 ISR(INT0_vect)
 {
 	//Reading Cycle
-	PORTE &= ~(1 << CS_ADC);  // Output a low signal on pin 0
-	PORTE &= ~(1 << RD_ADC);  // Output a low signal on pin 1
+	PORTC &= ~(1 << CS_ADC);  
+	PORTC &= ~(1 << RD_ADC);  
 	adc_data = PINA;
-	PORTE |= (1 << RD_ADC);  // Output a high signal on pin 1
-	PORTE |= (1 << CS_ADC);  // Output a high signal on pin 0
+	PORTC |= (1 << RD_ADC);  
+	PORTC |= (1 << CS_ADC);  
 	
 	//Writing Cycle
-	PORTE &= ~(1 << CS_ADC);  // Output a low signal on pin 0
-	PORTE &= ~(1 << WR_ADC);  // Output a low signal on pin 2
-	PORTE |= (1 <<  WR_ADC);  // Output a high signal on pin 2
-	PORTE |= (1 << CS_ADC);  // Output a high signal on pin 0
+	PORTC &= ~(1 << CS_ADC);  
+	PORTC &= ~(1 << WR_ADC);  
+	PORTC |= (1 <<  WR_ADC);  
+	PORTC |= (1 << CS_ADC);  
 }

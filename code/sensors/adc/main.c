@@ -7,32 +7,32 @@
 
 //Define ADC control pins
 #define BAUDRATE 8
-#define CS_ADC PINC7
-#define RD_ADC PINC6
-#define WR_ADC PINC5
+#define CS_ADC_PRESSURE PINC7
+#define RD_ADC_PRESSURE PINC6
+#define WR_ADC_PRESSURE PINC5
 
 //Function prototypes
 void usart_init(void);
 void usart_tx(unsigned char);
-void adc_init(void);
-void adc_write (void);
+void adc_init_pressure(void);
+void adc_write_pressure (void);
 void INT0_init(void);
 
 //Global variable
-char adc_data; 
+char adc_data_pressure; 
 
 int main (void)
 {
 	//Initializes USAR, ADC, and interrupt
 	usart_init();
-	adc_init();
+	adc_init_pressure();
 	INT0_init();
 	
-	adc_write();		//Trigger ADC conversion
+	adc_write_pressure();		//Trigger ADC conversion
 	
 	//Continuously read and transmit ADC data
 	while(1){	
-		usart_tx(adc_data);
+		usart_tx(adc_data_pressure);
 		_delay_ms(100);
 	}
 
@@ -55,24 +55,24 @@ void usart_tx (unsigned char data){
 }
 
 //Initializes ADC control pins and set input/output pins 
-void adc_init(void){
-	DDRC |= (1 << CS_ADC);  
-	DDRC |= (1 << RD_ADC);  
-	DDRC |= (1 << WR_ADC); 
+void adc_init_pressure(void){
+	DDRC |= (1 << CS_ADC_PRESSURE);  
+	DDRC |= (1 << RD_ADC_PRESSURE);  
+	DDRC |= (1 << WR_ADC_PRESSURE); 
 	DDRA = 0x0;		
 	
-	PORTC |= (1 << CS_ADC);  
-	PORTC |= (1 << RD_ADC);  
-	PORTC |= (1 <<  WR_ADC);  
+	PORTC |= (1 << CS_ADC_PRESSURE);  
+	PORTC |= (1 << RD_ADC_PRESSURE);  
+	PORTC |= (1 <<  WR_ADC_PRESSURE);  
 }
 
 //Triggers ADC conversion
-void adc_write(void){	
+void adc_write_pressure(void){	
 	//Writing Cycle
-	PORTC &= ~(1 << CS_ADC);  
-	PORTC &= ~(1 << WR_ADC);  
-	PORTC |= (1 <<  WR_ADC);  
-	PORTC |= (1 << CS_ADC); 
+	PORTC &= ~(1 << CS_ADC_PRESSURE);  
+	PORTC &= ~(1 << WR_ADC_PRESSURE);  
+	PORTC |= (1 <<  WR_ADC_PRESSURE);  
+	PORTC |= (1 << CS_ADC_PRESSURE); 
 }
 
 //Initializes external interrupt 0 for reading ADC data
@@ -89,15 +89,15 @@ void INT0_init(void){
 ISR(INT0_vect)
 {
 	//Reading Cycle
-	PORTC &= ~(1 << CS_ADC);  
-	PORTC &= ~(1 << RD_ADC);  
-	adc_data = PINA;
-	PORTC |= (1 << RD_ADC);  
-	PORTC |= (1 << CS_ADC);  
+	PORTC &= ~(1 << CS_ADC_PRESSURE);  
+	PORTC &= ~(1 << RD_ADC_PRESSURE);  
+	adc_data_pressure = PINA;
+	PORTC |= (1 << RD_ADC_PRESSURE);  
+	PORTC |= (1 << CS_ADC_PRESSURE);  
 	
 	//Writing Cycle
-	PORTC &= ~(1 << CS_ADC);  
-	PORTC &= ~(1 << WR_ADC);  
-	PORTC |= (1 <<  WR_ADC);  
-	PORTC |= (1 << CS_ADC);  
+	PORTC &= ~(1 << CS_ADC_PRESSURE);  
+	PORTC &= ~(1 << WR_ADC_PRESSURE);  
+	PORTC |= (1 <<  WR_ADC_PRESSURE);  
+	PORTC |= (1 << CS_ADC_PRESSURE);  
 }

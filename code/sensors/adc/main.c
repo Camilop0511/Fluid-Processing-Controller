@@ -8,23 +8,23 @@
 //Define ADC control pins
 #define BAUDRATE 8
 #define CS_ADC_PRESSURE PINC7
-#define RD_ADC_PRESSURE PINC6
-#define WR_ADC_PRESSURE PINC5
-
+#define RD_ADC PINC6
+#define WR_ADC PINC5
 #define CS_ADC_TEMPERATURE PINC4
-#define RD_ADC_TEMPERATURE PINC3
-#define WR_ADC_TEMPERATURE PINC2
 
 //Function prototypes
 void usart_init(void);
 void usart_tx(unsigned char);
-void adc_init_pressure(void);
+void adc_init(void);
+
 void adc_write_pressure (void);
 void INT0_init(void);
 
-void adc_init_temperature(void);
 void adc_write_temperature (void);
 void INT0_init(void);
+
+
+void INT_init(void);
 
 //Global variable
 char adc_data_pressure;
@@ -34,18 +34,19 @@ int main (void)
 {
 	//Initializes USAR, ADC, and interrupt
 	usart_init();
-	adc_init_pressure();
-	adc_init_temperature();
-	INT0_init();
-	INT1_init();
-
+	adc_init();
+	INT_init();
+	
+	
 	//Continuously read and transmit ADC data
 	while(1){
 		adc_write_pressure();		//Trigger ADC conversion
+		_delay_ms(50);
 		usart_tx(adc_data_pressure);
 		_delay_ms(100);
 		
 		adc_write_temperature();
+		_delay_ms(50);
 		usart_tx(adc_data_temperature);
 		_delay_ms(100);
 	}
@@ -69,23 +70,25 @@ void usart_tx (unsigned char data){
 }
 
 //Initializes ADC control pins and set input/output pins
-void adc_init_pressure(void){
+void adc_init(void){
 	DDRC |= (1 << CS_ADC_PRESSURE);
-	DDRC |= (1 << RD_ADC_PRESSURE);
-	DDRC |= (1 << WR_ADC_PRESSURE);
+	DDRC |= (1 << CS_ADC_TEMPERATURE);
+	DDRC |= (1 << RD_ADC);
+	DDRC |= (1 << WR_ADC);
 	DDRA = 0x0;
 	
 	PORTC |= (1 << CS_ADC_PRESSURE);
-	PORTC |= (1 << RD_ADC_PRESSURE);
-	PORTC |= (1 <<  WR_ADC_PRESSURE);
+	PORTC |= (1 << CS_ADC_TEMPERATURE);
+	PORTC |= (1 << RD_ADC);
+	PORTC |= (1 <<  WR_ADC);
 }
 
 //Triggers ADC conversion
 void adc_write_pressure(void){
 	//Writing Cycle
 	PORTC &= ~(1 << CS_ADC_PRESSURE);
-	PORTC &= ~(1 << WR_ADC_PRESSURE);
-	PORTC |= (1 <<  WR_ADC_PRESSURE);
+	PORTC &= ~(1 << WR_ADC);
+	PORTC |= (1 <<  WR_ADC);
 	PORTC |= (1 << CS_ADC_PRESSURE);
 }
 
@@ -104,36 +107,22 @@ ISR(INT0_vect)
 {
 	//Reading Cycle
 	PORTC &= ~(1 << CS_ADC_PRESSURE);
-	PORTC &= ~(1 << RD_ADC_PRESSURE);
+	PORTC &= ~(1 << RD_ADC);
 	adc_data_pressure = PINA;
-	PORTC |= (1 << RD_ADC_PRESSURE);
-	PORTC |= (1 << CS_ADC_PRESSURE);
-	
-	//Writing Cycle
-	PORTC &= ~(1 << CS_ADC_PRESSURE);
-	PORTC &= ~(1 << WR_ADC_PRESSURE);
-	PORTC |= (1 <<  WR_ADC_PRESSURE);
+	PORTC |= (1 << RD_ADC);
 	PORTC |= (1 << CS_ADC_PRESSURE);
 }
 
 //-----------------------------------------
 //-----------------------------------------
 
-void adc_init_temperature(void){
-	DDRC |= (1 << CS_ADC_TEMPERATURE);
-	DDRC |= (1 << RD_ADC_TEMPERATURE);
-	DDRC |= (1 << WR_ADC_TEMPERATURE);
-	
-	PORTC |= (1 << CS_ADC_TEMPERATURE);
-	PORTC |= (1 << RD_ADC_TEMPERATURE);
-	PORTC |= (1 <<  WR_ADC_TEMPERATURE);
-}
+
 
 void adc_write_temperature(void){
 	//Writing Cycle
 	PORTC &= ~(1 << CS_ADC_TEMPERATURE);
-	PORTC &= ~(1 << WR_ADC_TEMPERATURE);
-	PORTC |= (1 <<  WR_ADC_TEMPERATURE);
+	PORTC &= ~(1 << WR_ADC);
+	PORTC |= (1 <<  WR_ADC);
 	PORTC |= (1 << CS_ADC_TEMPERATURE);
 }
 
@@ -149,14 +138,17 @@ void INT1_init(void){
 ISR(INT1_vect) {
 	//Reading Cycle
 	PORTC &= ~(1 << CS_ADC_TEMPERATURE);
-	PORTC &= ~(1 << RD_ADC_TEMPERATURE);
+	PORTC &= ~(1 << RD_ADC);
 	adc_data_temperature = PINA;
-	PORTC |= (1 << RD_ADC_TEMPERATURE);
+	PORTC |= (1 << RD_ADC);
 	PORTC |= (1 << CS_ADC_TEMPERATURE);
-		
-	//Writing Cycle
-	PORTC &= ~(1 << CS_ADC_TEMPERATURE);
-	PORTC &= ~(1 << WR_ADC_TEMPERATURE);
-	PORTC |= (1 <<  WR_ADC_TEMPERATURE);
-	PORTC |= (1 << CS_ADC_TEMPERATURE);
+}
+
+void INT_init(void){
+	// Sets up INT0 and INT1 to trigger on falling edge
+	MCUCR |= (1 << ISC01) | (1 << ISC11);
+	MCUCR &= ~(1 << ISC00) & ~(1 << ISC10);
+	
+	GICR |= (1 << INT0) | (1 << INT1);	// Enable INT0 and INT1 interrupts
+	sei();								// Enable global interrupts
 }

@@ -43,12 +43,12 @@ int main (void)
 		adc_write_pressure();		//Trigger ADC conversion
 		_delay_ms(50);
 		usart_tx(adc_data_pressure);
-		_delay_ms(100);
+		_delay_ms(50);
 		
 		adc_write_temperature();
 		_delay_ms(50);
-		usart_tx(adc_data_temperature);
-		_delay_ms(100);
+		usart_tx(adc_data_temperature);		//Can also be used inside the interrupt function
+		_delay_ms(50);
 	}
 
 	return 0;
@@ -111,6 +111,8 @@ ISR(INT0_vect)
 	adc_data_pressure = PINA;
 	PORTC |= (1 << RD_ADC);
 	PORTC |= (1 << CS_ADC_PRESSURE);
+	
+	//usart_tx(adc_data_pressure);
 }
 
 //-----------------------------------------
@@ -142,6 +144,8 @@ ISR(INT1_vect) {
 	adc_data_temperature = PINA;
 	PORTC |= (1 << RD_ADC);
 	PORTC |= (1 << CS_ADC_TEMPERATURE);
+	
+	//usart_tx(adc_data_temperature);
 }
 
 void INT_init(void){

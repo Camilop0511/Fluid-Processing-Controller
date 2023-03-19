@@ -25,6 +25,7 @@ void INT0_init(void);
 
 
 void INT_init(void);
+char adc_to_temperature(char);
 
 //Global variable
 char adc_data_pressure;
@@ -37,18 +38,23 @@ int main (void)
 	adc_init();
 	INT_init();
 	
+	char temperature;
 	
 	//Continuously read and transmit ADC data
 	while(1){
-		adc_write_pressure();		//Trigger ADC conversion
-		_delay_ms(50);
+		/*adc_write_pressure();		//Trigger ADC conversion
+		_delay_ms(100);
 		usart_tx(adc_data_pressure);
-		_delay_ms(50);
+		_delay_ms(100);*/
 		
 		adc_write_temperature();
-		_delay_ms(50);
-		usart_tx(adc_data_temperature);		//Can also be used inside the interrupt function
-		_delay_ms(50);
+		_delay_ms(100);
+		temperature = adc_to_temperature(adc_data_temperature);
+		usart_tx(temperature);			//Can also be used inside the interrupt function
+		//usart_tx(adc_data_temperature);
+		_delay_ms(100);
+		
+		
 	}
 
 	return 0;
@@ -118,8 +124,6 @@ ISR(INT0_vect)
 //-----------------------------------------
 //-----------------------------------------
 
-
-
 void adc_write_temperature(void){
 	//Writing Cycle
 	PORTC &= ~(1 << CS_ADC_TEMPERATURE);
@@ -155,4 +159,14 @@ void INT_init(void){
 	
 	GICR |= (1 << INT0) | (1 << INT1);	// Enable INT0 and INT1 interrupts
 	sei();								// Enable global interrupts
+}
+
+//-----------------------------------------
+//-----------------------------------------
+
+char adc_to_temperature(char adc_temperature){
+	int temperature;
+	temperature = ((int)adc_temperature * 100) / 255;
+	return (char)temperature;
+	
 }

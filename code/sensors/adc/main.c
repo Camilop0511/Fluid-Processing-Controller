@@ -1,12 +1,13 @@
 #include <xc.h>
+#include <avr/io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <avr/interrupt.h>
-#define F_CPU 8000000L
+#define F_CPU 1000000L
 #include <util/delay.h>
 
 //Define ADC control pins
-#define BAUDRATE 8
+#define BAUDRATE 0
 #define CS_ADC_PRESSURE PINC7
 #define RD_ADC PINC6
 #define WR_ADC PINC5
@@ -18,14 +19,11 @@ void usart_tx(unsigned char);
 void adc_init(void);
 
 void adc_write_pressure (void);
-void INT0_init(void);
-
 void adc_write_temperature (void);
-void INT0_init(void);
-
 
 void INT_init(void);
-char adc_to_temperature(char);
+char adc_to_temperature(void);
+char adc_to_volume(void);
 
 //Global variable
 char adc_data_pressure;
@@ -39,22 +37,24 @@ int main (void)
 	INT_init();
 	
 	char temperature;
+	char volume;
 	
 	//Continuously read and transmit ADC data
 	while(1){
-		/*adc_write_pressure();		//Trigger ADC conversion
+		adc_write_pressure();		//Trigger ADC conversion
 		_delay_ms(100);
+		//volume = adc_to_volume();
+		//usart_tx(volume);
 		usart_tx(adc_data_pressure);
-		_delay_ms(100);*/
+		_delay_ms(100);
 		
 		adc_write_temperature();
 		_delay_ms(100);
-		temperature = adc_to_temperature(adc_data_temperature);
+		temperature = adc_to_temperature();
 		usart_tx(temperature);			//Can also be used inside the interrupt function
 		//usart_tx(adc_data_temperature);
 		_delay_ms(100);
-		
-		
+	
 	}
 
 	return 0;
@@ -98,25 +98,21 @@ void adc_write_pressure(void){
 	PORTC |= (1 << CS_ADC_PRESSURE);
 }
 
-//Initializes external interrupt 0 for reading ADC data
-void INT0_init(void){
-	// Sets up INT0 to trigger on falling edge
-	MCUCR |= (1 << ISC01);
-	MCUCR &= ~(1 << ISC00);
-	
-	GICR |= (1 << INT0);	// Enable INT0 interrupt
-	sei();					// Enable global interrupts
-}
-
 //Interrupt service routine for reading ADC data
 ISR(INT0_vect)
 {
+	PORTC |= (1 << CS_ADC_TEMPERATURE);
+	
 	//Reading Cycle
 	PORTC &= ~(1 << CS_ADC_PRESSURE);
+	_delay_us(1);
 	PORTC &= ~(1 << RD_ADC);
+	_delay_us(1);
 	adc_data_pressure = PINA;
 	PORTC |= (1 << RD_ADC);
+	_delay_us(1);
 	PORTC |= (1 << CS_ADC_PRESSURE);
+	_delay_us(1);
 	
 	//usart_tx(adc_data_pressure);
 }
@@ -132,22 +128,19 @@ void adc_write_temperature(void){
 	PORTC |= (1 << CS_ADC_TEMPERATURE);
 }
 
-void INT1_init(void){
-	// Sets up INT0 to trigger on falling edge
-	MCUCR |= (1 << ISC11);
-	MCUCR &= ~(1 << ISC10);
-	
-	GICR |= (1 << INT1);	// Enable INT0 interrupt
-	sei();					// Enable global interrupts
-}
-
 ISR(INT1_vect) {
+	PORTC |= (1 << CS_ADC_PRESSURE);
+	
 	//Reading Cycle
 	PORTC &= ~(1 << CS_ADC_TEMPERATURE);
+	_delay_us(1);
 	PORTC &= ~(1 << RD_ADC);
+	_delay_us(1);
 	adc_data_temperature = PINA;
 	PORTC |= (1 << RD_ADC);
+	_delay_us(1);
 	PORTC |= (1 << CS_ADC_TEMPERATURE);
+	_delay_us(1);
 	
 	//usart_tx(adc_data_temperature);
 }
@@ -164,9 +157,15 @@ void INT_init(void){
 //-----------------------------------------
 //-----------------------------------------
 
-char adc_to_temperature(char adc_temperature){
+char adc_to_temperature(void){
 	int temperature;
-	temperature = ((int)adc_temperature * 100) / 255;
+	temperature = ((int)adc_data_temperature * 100) / 255;
 	return (char)temperature;
-	
 }
+
+/*char adc_to_volume(void){
+	float volumen;
+	volumen = ((float)adc_data_pressure - 1) * 7.86;
+	return (char)volume;
+}*/
+

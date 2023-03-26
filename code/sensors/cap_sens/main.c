@@ -15,12 +15,12 @@
 void usart_init(void);
 void usart_tx(unsigned char);
 
+void cap_sensors_init(void);
+
 int main (void)
 {
-	DDRE &= ~(1 << cap_sen_t1_low) & ~(1 << cap_sen_t1_high);
-	DDRC &= ~(1 << cap_sen_t2_low) & ~(1 << cap_sen_t2_high) & ~(1 << cap_sen_pt_high);
-	
 	usart_init();
+	cap_sensors_init();
 
 	int cap_sen_t1_low_val = 0;
 	int cap_sen_t1_high_val = 0;
@@ -33,7 +33,7 @@ int main (void)
 		_delay_ms(100);
 		usart_tx(cap_sen_t1_low_val);
 		
-		_delay_ms(1000);
+		/*_delay_ms(1000);
 		
 		cap_sen_t1_high_val = (PINE & (1 << cap_sen_t1_high)) >> cap_sen_t1_high;
 		_delay_ms(100);
@@ -57,7 +57,7 @@ int main (void)
 		_delay_ms(100);
 		usart_tx(cap_sen_pt_high_val);
 		
-		_delay_ms(1000);
+		_delay_ms(1000);*/
 		
 	}
 	return 0;
@@ -75,3 +75,9 @@ void usart_tx (unsigned char data){
 }
 
 
+void cap_sensors_init(void){
+	DDRE &= ~(1 << cap_sen_t1_low) & ~(1 << cap_sen_t1_high);
+	DDRC &= ~(1 << cap_sen_t2_low) & ~(1 << cap_sen_t2_high) & ~(1 << cap_sen_pt_high);
+	
+	return 0;
+}

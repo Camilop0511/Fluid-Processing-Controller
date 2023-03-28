@@ -33,10 +33,24 @@
                 <input type="radio" id="piano" name="instrument" value="Piano">
                 <label for="piano">Piano</label>
              </p>-->
+
+             <p>
+                <label for="t1">Please provide quantity of liquid for liquid 1:</label>
+                <input type="text" id="tank1" name="tank1" pattern="^([1-9]|[1-9][0-9]{2}|1[0-9]{3}|2000)$" 
+                onblur="requiredf(this)" placeholder="500" title="Values from 100ml to 2000mls only" required> ml
+            </p>
+
+            <p>
+                <label for="t2">Please provide quantity of liquid for liquid 2:</label>
+                <input type="text" id="tank2" name="tank2" pattern="^([1-9]|[1-9][0-9]{2}|1[0-9]{3}|2000)$" 
+                onblur="requiredf(this)" placeholder="500" title="Values from 100ml to 2000mls only" required> ml
+            </p>
+            <br>
+
             <p>
                 <label for="wp1">Please provide a percentage value for Water Pump 1 speed:</label>
                 <input type="text" id="water_p1" name="water_p1" pattern="^([1-9]|[1-9][0-9]|100)$" 
-                onblur="requiredf(this)" placeholder="100" title="Values from 0 to 100 only"> %
+                onblur="requiredf(this)" placeholder="100" title="Values from 0 to 100 only" required> %
                 <span id="req" style="color:red; font-weight:bold; display:none"> 
                     *This field is required </span> 
                 
@@ -47,48 +61,19 @@
                             document.getElementById("req").style.display = "block";
                     }
                 </script>    
-            </p>
-            <p>
-                <!--Set or toggle a LED (GPIO)-->
-                Choose a LED function:
-                <input type="radio" id="toggle" name="ledfun" value="Toggle" required>
-                <label for="toggle">Toggle</label>
-                <input type="radio" id="ledset" name="ledfun" value="Ledset">
-                <label for="toggle">LED Set</label>
-            </p>
-            <p>
-                <!--Display Information retrieved from database-->
-                <label for="selection">Choose a Beatles album to display information
-                    about: </label>
-                <select id="selection" name="selection">
-                    <option value="ppm">Please Please Me</option>
-                    <option value="hdn">A Hard Day's Night</option>
-                    <option value="rev">Revolver</option>
-                    <option value="sgt">Sgt. Pepper's Lonely Hearts Club Band</option>
-                    <option value="mmt">Magical Mystery Tour</option>
-                    <option value="twa">The White Album</option>
-                 </select>
-            </p>
-            <h2>Add infomation about another album! (Optional)</h2>
-            <p> 
-                <!--Update the database with information submitted by the user-->
-                <label for="album">Enter the album's name: </label>
-                <input type="text" id="album" name="album" size="40" 
-                placeholder="Please Please Me" title="Max 50 characters"><br>
 
-                <label for="ryear"> Release Year:</label>
-                <input type="number" id="ryear" name="ryear" min="1963" max="1970" 
-                placeholder="1963"><br>
-
-                <label for="alength">Album's Length</label>
-                <input type="text" id="alength" name="alength" pattern="^([0-9]{2}:[0-9]{2})$" 
-                    placeholder="32:16"><br>
-
-                <label for="asingle">Enter the first single: </label>
-                <input type="text" id="asingle" name="asingle" size="30" 
-                placeholder="Love Me Do" title="Max 30 characters"><br>
             </p>
+                <label for="wp2">Please provide a percentage value for Water Pump 2 speed:</label>
+                <input type="text" id="water_p2" name="water_p2" pattern="^([1-9]|[1-9][0-9]|100)$" 
+                onblur="requiredf(this)" placeholder="100" title="Values from 0 to 100 only" required> %
             <p>
+            <br>
+
+            <p>
+                <label for="tmp">Please enter the desired temperature:</label>
+                <input type="text" id="temp" name="temp" pattern="^(6[0-9]|[7-9][0-9]|100)$" 
+                onblur="requiredf(this)" placeholder="80" title="Values from 60 to 100 only" required> °C
+            </p>
                 <input type="submit" value="Submit">
             </p>
         </form>

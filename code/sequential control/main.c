@@ -51,17 +51,23 @@ char adc_to_temperature(void);
 char adc_to_volume(void);
 void ISR_INT0_vect(void);
 void ISR_INT1_vect(void);
+void USART_RX_vect(void);
 
 void cap_sensors_init(void);
 void uart_transmit(void);
 int USART_printCHAR(char character, FILE *stream);
 
+
+
 //Global variable
 unsigned int step = 0;	
 char adc_data_pressure;
 char adc_data_temperature;
+char RxBuffer[2];
+volatile uint8_t RxCounter = 0;
 
 static FILE mystdout = FDEV_SETUP_STREAM(USART_printCHAR, NULL, _FDEV_SETUP_WRITE);
+
 
 int main(void)
 {
@@ -75,6 +81,7 @@ int main(void)
 	char volume;
 	
 	//Initialize PWM and USART communication
+	cli();
 	pwm_init_p();
 	pwm_init_r();
 	usart_init();
@@ -84,6 +91,7 @@ int main(void)
 	
 	char buffer[2];
 	int i;
+	int a = 0, b = 0, c = 0;
 	
 	while (1)
 	{
@@ -169,10 +177,18 @@ int main(void)
 			
 		}*/
 		
-		i=123;
-		printf("Hello,world %d", i);
-		_delay_ms(1000);
 		
+		
+		/*i=123;
+		printf("Hello,world %d", i);
+		_delay_ms(1000);*/
+		
+		/*printf("Enter three integers: ");
+		fflush(stdin);
+		scanf("%d %d %d", &a, &b, &c);
+		printf("You entered: %d %d %d\n", a, b, c);
+		
+		_delay_ms(2000);*/
 		
 		
 		
@@ -197,7 +213,7 @@ int main(void)
 //Initializes USART
 void usart_init (void){
 	UBRRL=BAUDRATE;								//sets baud rate
-	UCSRB|=(1<<TXEN)|(1<<RXEN);					//enables receiver and transmitter
+	UCSRB|=(1<<TXEN)|(1<<RXEN)|(1<<RXCIE);					//enables receiver and transmitter
 	UCSRC|=(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);	// 8bit data format
 	//UCSRB |= (1 << TXCIE);						//Enables Tx interrupt
 	 stdout = &mystdout;
@@ -387,4 +403,54 @@ void cap_sensors_init(void){
 	DDRC &= ~(1 << cap_sen_t2_low) & ~(1 << cap_sen_t2_high) & ~(1 << cap_sen_pt_high);
 	
 	return 0;
+}
+
+
+ISR(USART_RX_vect){
+	//Read incoming byte and store it in buffer
+	
+	while (RxCounter < 2){
+		if (UCSRA & (1 << RXC)) { // Check if there is data available
+			RxBuffer[RxCounter] = UDR;
+			RxCounter++;
+		}
+	}
+	
+		if (RxBuffer[0] == 0x5B){				//[
+			printf("Wp_1 speed: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+		
+		else if (RxBuffer[0] == 0x4A){			//J
+			printf("liquid level tank 1: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+	
+		else if (RxBuffer[0] == 0x3D){			//=
+			printf("Wp_2 speed: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+	
+		else if (RxBuffer[0] == 0x2C){			//,
+			printf("liquid level tank 2: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+			
+		else if (RxBuffer[0] == 0x1F){			//unit separator
+			printf("Liquid's Temperature: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+		
+		else if (RxBuffer[0] == 0x0E){			//shiftout
+			printf("Waiting time: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+		
+		else if (RxBuffer[0] == 0x0A){			//newline
+			printf("Start Indication: ");
+			printf("%x\n\r", RxBuffer[1]);
+		}
+		
+		RxCounter = 0;
+		memset(RxBuffer, 0, sizeof(RxBuffer));
 }

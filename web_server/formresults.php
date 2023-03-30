@@ -8,7 +8,7 @@
             Liquid level tank1: <?= dechex((int)$_POST['tank1']); ?> 
         </p> 
         <p>
-            Liquid leve tank2: <?= (int)$_POST['tank2']; ?> 
+            Liquid leve tank2: <?= dechex(int)$_POST['tank2']; ?> 
         </p> 
         <p>
             Speed percentage water pump1: <?= (int)$_POST['water_p1']; ?> 

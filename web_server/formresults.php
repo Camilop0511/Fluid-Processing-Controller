@@ -4,23 +4,35 @@
         <title>formresults.php</title>
     </head>
     <body> 
-        <p>
-            Liquid level tank1: <?= dechex((int)$_POST['tank1']); ?> 
-        </p> 
-        <p>
-            Liquid level tank2: <?= dechex((int)$_POST['tank2']); ?> 
-        </p> 
-        <p>
-            Speed percentage water pump1: <?= dechex((int)$_POST['water_p1']); ?> 
-        </p> 
-        <p>
-            Speed percentage water pump2: <?= dechex((int)$_POST['water_p2']); ?> 
-        </p> 
-        <p>
-            Set temperature: <?= dechex((int)$_POST['temp']); ?> 
-        </p> 
-        <p>
-            Cool-down time: <?= dechex((int)$_POST['sec']); ?> 
-        </p> 
+        <?php
+            $values = array(
+                'tank1' => (int)$_POST['tank1'],
+                'tank2' => (int)$_POST['tank2'],
+                'water_p1' => (int)$_POST['water_p1'],
+                'water_p2' => (int)$_POST['water_p2'],
+                'temp' => (int)$_POST['temp'],
+                'sec' => (int)$_POST['sec']
+            );
+            $port = fopen("/dev/ttyS0", "w");
+
+            foreach ($values as $key => $value) {
+                $hexValue = dechex($value);
+                $bytes = str_split($hexValue, 2);
+
+                foreach ($bytes as $byte) {
+                    $byteValue = hexdec($byte);
+                    fwrite($port, chr($byteValue));
+                    usleep(1000); // wait for 1 millisecond
+                }
+            }
+
+            fclose($port);
+        ?>
+        <p>Data sent over serial in hex format:</p>
+        <ul>
+            <?php foreach ($values as $key => $value) : ?>
+                <li><?= $key ?>: <?= dechex($value) ?></li>
+            <?php endforeach; ?>
+        </ul>
     </body>
 </html>

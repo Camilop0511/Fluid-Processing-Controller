@@ -63,7 +63,7 @@ void stop_actuators(void);
 
 //Global variable
 unsigned int step = 0;	
-char adc_data_pressure;
+int adc_data_pressure;
 char adc_data_temperature;
 char RxBuffer[2];
 volatile uint8_t RxCounter = 0;
@@ -229,7 +229,10 @@ int main(void)
 			step = 2;
 			printf("Step: %d\n\r", step);
 			_delay_ms(1000);
-			water_p1_start(wp1_speed_process);
+			percentage = numeric_to_percentage_wps(wp1_speed_process);
+			printf("percentage value: %d", percentage);
+			water_p1_start(percentage);
+		
 			
 	
 		}
@@ -349,9 +352,10 @@ int ascii_input(void){
 
 void water_p1_start(int max){
 	int m;
-	for(m = 0; m = max; m++){
+	for(m = 0; m <= max; m++){
 		water_p1 = m;
-		_delay_ms(40);			
+		_delay_ms(2);				//Ensures that the loop completes within 3 seconds.
+					
 	}
 }
 
@@ -359,7 +363,7 @@ void water_p1_stop(int max){
 	int s;
 	for(s = max; s = 0; s--){
 		water_p1 = s;
-		_delay_ms(40);
+		_delay_ms(40);				//Ensures that the loop completes within 3 seconds.
 	}
 	
 }

@@ -65,6 +65,15 @@ char adc_data_pressure;
 char adc_data_temperature;
 char RxBuffer[2];
 volatile uint8_t RxCounter = 0;
+int wp1_speed;
+int wp2_speed;
+int volume_t1;
+int volume_t2;
+int temperature;
+int waiting_time;
+int start;
+int stop;
+
 
 static FILE mystdout = FDEV_SETUP_STREAM(USART_printCHAR, NULL, _FDEV_SETUP_WRITE);
 
@@ -190,7 +199,8 @@ int main(void)
 		
 		_delay_ms(2000);*/
 		
-		
+		//printf("This is a test\n\r");
+		//_delay_ms(1000);
 		
 	}
 	return 0;
@@ -390,8 +400,8 @@ char adc_to_temperature(void){
 }
 
 /*char adc_to_volume(void){
-	float volumen;
-	volumen = ((float)adc_data_pressure - 1) * 7.86;
+	float volume;
+	volume = ((float)adc_data_pressure - 1) * 7.86;
 	return (char)volume;
 }*/
 
@@ -417,38 +427,47 @@ ISR(USART_RX_vect){
 	}
 	
 		if (RxBuffer[0] == 0x5B){				//[
-			printf("Wp_1 speed: ");
-			printf("%x\n\r", RxBuffer[1]);
+			wp1_speed = RxBuffer[1];
+			printf("WP1 Speed: %d\n\r", wp1_speed);
+			
 		}
 		
 		else if (RxBuffer[0] == 0x4A){			//J
-			printf("liquid level tank 1: ");
-			printf("%x\n\r", RxBuffer[1]);
+			//printf("liquid level tank 1: ");
+			//printf("%x\n\r", RxBuffer[1]);
+			volume_t1 = RxBuffer[1];
+			printf("Tank 1 Volume: %d\n\r", volume_t1);
 		}
 	
 		else if (RxBuffer[0] == 0x3D){			//=
-			printf("Wp_2 speed: ");
-			printf("%x\n\r", RxBuffer[1]);
+			wp2_speed = RxBuffer[1];
+			printf("WP2 Speed: %d\n\r", wp2_speed);
 		}
 	
 		else if (RxBuffer[0] == 0x2C){			//,
-			printf("liquid level tank 2: ");
-			printf("%x\n\r", RxBuffer[1]);
+			//printf("liquid level tank 2: ");
+			//printf("%x\n\r", RxBuffer[1]);
+			volume_t2 = RxBuffer[1];
+			printf("Tank 2 Volume: %d\n\r", volume_t2);
 		}
 			
 		else if (RxBuffer[0] == 0x1F){			//unit separator
-			printf("Liquid's Temperature: ");
-			printf("%x\n\r", RxBuffer[1]);
+			//printf("%x\n\r", RxBuffer[1]);
+			temperature = RxBuffer[1];
+			printf("Liquid's Temperature: %d\n\r", temperature);
 		}
 		
 		else if (RxBuffer[0] == 0x0E){			//shiftout
-			printf("Waiting time: ");
-			printf("%x\n\r", RxBuffer[1]);
+			//printf("%x\n\r", RxBuffer[1]);
+			waiting_time = RxBuffer[1];
+			printf("Waiting time: %d\n\r", waiting_time);
 		}
 		
 		else if (RxBuffer[0] == 0x0A){			//newline
-			printf("Start Indication: ");
-			printf("%x\n\r", RxBuffer[1]);
+			
+			//printf("%x\n\r", RxBuffer[1]);
+			start = RxBuffer[1];
+			printf("Indication: %d\n\r", start);
 		}
 		
 		RxCounter = 0;

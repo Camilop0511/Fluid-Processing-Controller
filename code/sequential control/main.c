@@ -29,7 +29,8 @@
 #define com4 0x2C	//Liquid level tank 2
 #define com5 0x1F	//Liquid temperature
 #define com6 0x0E	//Waiting time
-#define com7 0x0A	//Start indication 
+#define START 0x0A	//Start indication 
+#define STOP 0x5F
 
 //Function prototypes
 void usart_init(void);
@@ -48,7 +49,7 @@ void adc_write_pressure (void);
 void adc_write_temperature (void);
 void INT_init(void);
 char adc_to_temperature(void);
-char adc_to_volume(void);
+int adc_to_volume(void);
 void ISR_INT0_vect(void);
 void ISR_INT1_vect(void);
 void USART_RX_vect(void);
@@ -56,6 +57,7 @@ void USART_RX_vect(void);
 void cap_sensors_init(void);
 void uart_transmit(void);
 int USART_printCHAR(char character, FILE *stream);
+void stop_actuators(void);
 
 
 
@@ -71,8 +73,8 @@ int volume_t1;
 int volume_t2;
 int temperature;
 int waiting_time;
-int start;
-int stop;
+int start = 0;
+int stop = 0;
 
 
 static FILE mystdout = FDEV_SETUP_STREAM(USART_printCHAR, NULL, _FDEV_SETUP_WRITE);
@@ -86,8 +88,8 @@ int main(void)
 	//Declare variables
 	int numeric_value = 0;
 	uint16_t percentage = 0;
-	char temperature;
-	char volume;
+	//char temperature;
+	int volume;
 	
 	//Initialize PWM and USART communication
 	cli();
@@ -101,6 +103,15 @@ int main(void)
 	char buffer[2];
 	int i;
 	int a = 0, b = 0, c = 0;
+	
+	int wp1_speed_process;
+	int wp2_speed_process;
+	int volume_t1_process;
+	int volume_t2_process;
+	int temperature_process;
+	int waiting_time_process;
+
+	
 	
 	while (1)
 	{
@@ -169,38 +180,59 @@ int main(void)
 		//uart_transmit();
 		
 		
-		
-		/*//Step 0
+		//Step 0
 		if(step == 0){
-			uart_tx(com0);
-			_delay_ms(2000);
-			
-			for(i=0; i = 1; i++){
-			 buffer[i] = uart_rx();
-			 uart_tx('1');
+			printf("Step: %d\n\r", step);
+				_delay_ms(1000);
 			}
+
+		
+		if(step == 0 && start == 1 && stop == 0){ 
 			
-			for(i=0; i = 1; i++){
-				uart_tx(buffer[i]);
-			}
+			step = 1;
+			printf("Step: %d\n\r", step);
 			
-		}*/
+			//Transfer communication variables to process variables
+			wp1_speed_process = wp1_speed;
+			printf("WP1 speed: %d\n\r", wp1_speed_process);
+			
+			wp2_speed_process = wp2_speed;
+			printf("WP2 speed: %d\n\r", wp2_speed_process);
+			
+			volume_t1_process = volume_t1;
+			printf("volume product 1: %d\n\r", volume_t1_process);
+			
+			volume_t2_process = volume_t2;
+			printf("volume product 2: %d\n\r", volume_t2_process);
+			
+			temperature_process = temperature;
+			printf("temperature: %d\n\r", temperature_process);
+			
+			waiting_time_process = waiting_time;
+			printf("waiting time: %d\n\r", waiting_time_process);
+			
+			adc_write_pressure();		//Trigger ADC conversion
+			_delay_ms(100);
+			volume = adc_to_volume();
+			printf("volume process tank: %d\n\r", volume);
+			
+			_delay_ms(1000);
+		}
 		
+		adc_write_pressure();		//Trigger ADC conversion
+		_delay_ms(100);
+		volume = adc_to_volume();
+		printf("volume process tank: %d\n\r", volume);
 		
-		
-		/*i=123;
-		printf("Hello,world %d", i);
-		_delay_ms(1000);*/
-		
-		/*printf("Enter three integers: ");
-		fflush(stdin);
-		scanf("%d %d %d", &a, &b, &c);
-		printf("You entered: %d %d %d\n", a, b, c);
-		
-		_delay_ms(2000);*/
-		
-		//printf("This is a test\n\r");
-		//_delay_ms(1000);
+		if(step == 1 && start == 1 && stop == 0 && cap_sen_t1_low == 0 && volume <= 100){
+			
+			step = 2;
+			printf("Step: %d\n\r", step);
+			_delay_ms(1000);
+			water_p1_start(wp1_speed_process);
+			
+	
+		}
 		
 	}
 	return 0;
@@ -314,6 +346,24 @@ int ascii_input(void){
 	return numeric_value;
 }
 
+
+void water_p1_start(int max){
+	int m;
+	for(m = 0; m = max; m++){
+		water_p1 = m;
+		_delay_ms(40);			
+	}
+}
+
+void water_p1_stop(int max){
+	int s;
+	for(s = max; s = 0; s--){
+		water_p1 = s;
+		_delay_ms(40);
+	}
+	
+}
+
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 
@@ -394,16 +444,16 @@ void INT_init(void){
 }
 
 char adc_to_temperature(void){
-	int temperature;
-	temperature = ((int)adc_data_temperature * 100) / 255;
-	return (char)temperature;
+	int temperature_adc;
+	temperature_adc = ((int)adc_data_temperature * 100) / 255;
+	return (char)temperature_adc;
 }
 
-/*char adc_to_volume(void){
-	float volume;
+int adc_to_volume(void){
+	int volume;
 	volume = ((float)adc_data_pressure - 1) * 7.86;
-	return (char)volume;
-}*/
+	return (int)volume;
+}
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -451,25 +501,40 @@ ISR(USART_RX_vect){
 			printf("Tank 2 Volume: %d\n\r", volume_t2);
 		}
 			
-		else if (RxBuffer[0] == 0x1F){			//unit separator
+		else if (RxBuffer[0] == 0x1F){			//unit separator alt+31
 			//printf("%x\n\r", RxBuffer[1]);
 			temperature = RxBuffer[1];
 			printf("Liquid's Temperature: %d\n\r", temperature);
 		}
 		
-		else if (RxBuffer[0] == 0x0E){			//shiftout
+		else if (RxBuffer[0] == 0x0E){			//shiftout alt+14
 			//printf("%x\n\r", RxBuffer[1]);
 			waiting_time = RxBuffer[1];
 			printf("Waiting time: %d\n\r", waiting_time);
 		}
 		
-		else if (RxBuffer[0] == 0x0A){			//newline
+		else if (RxBuffer[0] == START){			//newline alt+10 alt+1
 			
 			//printf("%x\n\r", RxBuffer[1]);
 			start = RxBuffer[1];
 			printf("Indication: %d\n\r", start);
 		}
 		
+		else if (RxBuffer[0] == STOP){
+			
+			stop = RxBuffer[1];
+			printf("Indication: %d\n\r", stop);
+			
+		}
+			
+		
 		RxCounter = 0;
 		memset(RxBuffer, 0, sizeof(RxBuffer));
+}
+
+void stop_actuators(void){
+			water_p1 = 0;	
+			water_p2 = 0;
+			h_resis = 0;
+			PORTD |= (1 << electro_v);	
 }

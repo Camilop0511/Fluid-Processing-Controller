@@ -34,10 +34,16 @@
                 <label for="piano">Piano</label>
             </p>-->
 
-            <p>
+            <!--<p>
                 <label for="t1">Please provide quantity of liquid for liquid 1:</label>
                 <input type="text" id="tank1" name="tank1" pattern="^([1-9]|[1-9][0-9]{2}|1[0-9]{3}|2000)$" 
                 onblur="requiredf(this)" placeholder="500" title="Values from 100ml to 2000mls only" required> ml
+            </p>-->
+
+            <p>
+                <label for="t1">Please provide percentage of liquid for liquid 1:</label>
+                <input type="text" id="tank1" name="tank1" pattern="^([1-9]|[1-9][0-9]|100)$" 
+                onblur="requiredf(this)" placeholder="50" title="Values from 0 to 100 only" required> ml
             </p>
 
             <p>

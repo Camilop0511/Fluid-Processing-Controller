@@ -81,6 +81,7 @@ int waiting_time;
 int start = 0;
 int stop = 0;
 int real_volume;
+int volumen_segun_tanque;
 
 
 static FILE mystdout = FDEV_SETUP_STREAM(USART_printCHAR, NULL, _FDEV_SETUP_WRITE);
@@ -537,14 +538,23 @@ int adc_to_volume(void){
 	int level;
 	float adc_value;
 	
-	adc_value = ((float)adc_data_pressure * 0.0196078)  ;
+	adc_value = ((float)adc_data_pressure * 0.0196078)  ;							//Converts back to range of voltage 0-5V
 	//printf("adc_value: %2.2f\n\r", adc_value);
 	//printf("adc_value como int: %d\n\r", *(int *)&adc_value);
 	
-	level = (adc_value - 1) * 78.6;
 	
-	real_volume = level * 6.25;
+	level = (adc_value - 1) * 78.6;													//liquid level in millimeters 
+	printf("level in mm: %d\n\r", level);
+	
+	//real_volume = level * 6.25;
+	//real_volume = level * 6;
+	real_volume = (level * 6.24824) - 9.16149;
 	printf("real volume: %d\n\r", real_volume);
+	
+	volumen_segun_tanque = (level * 6.32878) - 2.08289;
+	printf("volumen segun tanque: %d\n\r", volumen_segun_tanque);
+	
+	
 	
 	return (int)real_volume;
 }

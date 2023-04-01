@@ -1,45 +1,31 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>formresults.php</title>
-    </head>
-    <body> 
-        <?php
-            $values = array(
-                'tank1' => (int)$_POST['tank1'],
-                'tank2' => (int)$_POST['tank2'],
-                'water_p1' => (int)$_POST['water_p1'],
-                'water_p2' => (int)$_POST['water_p2'],
-                'temp' => (int)$_POST['temp'],
-                'sec' => (int)$_POST['sec']
-            );
-            $port = fopen("/dev/ttyS0", "w");
+<?php
+$values = array(
+    'tank1' => (int)$_POST['tank1'],
+    'tank2' => (int)$_POST['tank2'],
+    'water_p1' => (int)$_POST['water_p1'],
+    'water_p2' => (int)$_POST['water_p2'],
+    'temp' => (int)$_POST['temp'],
+    'sec' => (int)$_POST['sec']
+);
 
-            // Set serial port settings
-            stream_set_write_buffer($port, 0);
-            stream_set_blocking($port, false);
-            stream_set_timeout($port, 1);
-            $serial_settings = "57600n8";
-            exec("stty -F /dev/ttyS0 $serial_settings");
+$serial_port = "/dev/ttyS0";
+$baud_rate = 57600;
+$command = "screen -L $serial_port $baud_rate,cs8,-parenb,-cstopb";
 
-            foreach ($values as $key => $value) {
-                $hexValue = dechex($value);
-                $bytes = str_split($hexValue, 2);
+foreach ($values as $key => $value) {
+    $hexValue = dechex($value);
+    $bytes = str_split($hexValue, 2);
 
-                foreach ($bytes as $byte) {
-                    $byteValue = hexdec($byte);
-                    fwrite($port, chr($byteValue));
-                    usleep(1000); // wait for 1 millisecond
-                }
-            }
+    foreach ($bytes as $byte) {
+        $byteValue = hexdec($byte);
+        $escapedByte = escapeshellarg(chr($byteValue));
+        $cmd = "echo -ne $escapedByte > $serial_port";
+        shell_exec($cmd);
+        usleep(1000); // wait for 1 millisecond
+    }
+}
 
-            fclose($port);
-        ?>
-        <p>Data sent over serial in hex format:</p>
-        <ul>
-            <?php foreach ($values as $key => $value) : ?>
-                <li><?= $key ?>: <?= dechex($value) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </body>
-</html>
+// Open screen and send data
+shell_exec($command);
+?>
+

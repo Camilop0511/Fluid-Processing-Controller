@@ -4,6 +4,7 @@
 #define F_CPU 8000000UL
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <string.h>
 
 //Define constants
 #define BAUDRATE 8			//57.6k bps at 8MHz
@@ -48,7 +49,7 @@ void adc_init(void);
 void adc_write_pressure (void);
 void adc_write_temperature (void);
 void INT_init(void);
-char adc_to_temperature(void);
+int adc_to_temperature(void);
 int adc_to_volume(void);
 void ISR_INT0_vect(void);
 void ISR_INT1_vect(void);
@@ -57,6 +58,10 @@ void USART_RX_vect(void);
 void cap_sensors_init(void);
 void uart_transmit(void);
 int USART_printCHAR(char character, FILE *stream);
+void water_p1_start(int);
+void water_p1_stop(int);
+void water_p2_start(int);
+void water_p2_stop(int);
 void stop_actuators(void);
 
 
@@ -64,17 +69,18 @@ void stop_actuators(void);
 //Global variable
 unsigned int step = 0;	
 int adc_data_pressure;
-char adc_data_temperature;
+int adc_data_temperature;
 char RxBuffer[2];
 volatile uint8_t RxCounter = 0;
 int wp1_speed;
 int wp2_speed;
-int volume_t1;
-int volume_t2;
+int level_t1;
+int level_t2;
 int temperature;
 int waiting_time;
 int start = 0;
 int stop = 0;
+int real_volume;
 
 
 static FILE mystdout = FDEV_SETUP_STREAM(USART_printCHAR, NULL, _FDEV_SETUP_WRITE);
@@ -100,18 +106,21 @@ int main(void)
 	INT_init();
 	cap_sensors_init();
 	
-	char buffer[2];
-	int i;
-	int a = 0, b = 0, c = 0;
-	
+	wp1_speed = 0;
+
+
 	int wp1_speed_process;
 	int wp2_speed_process;
-	int volume_t1_process;
-	int volume_t2_process;
+	int volume_product_1;
+	int volume_product_2;
 	int temperature_process;
 	int waiting_time_process;
-
 	
+	int cap_sen_t1_low_val;
+	int cap_sen_t1_high_val;
+	int cap_sen_t2_low_val;
+	int cap_sen_t2_high_val;
+	int cap_sen_pt_high_val;
 	
 	while (1)
 	{
@@ -134,8 +143,8 @@ int main(void)
 		
 		/*adc_write_pressure();		//Trigger ADC conversion
 		_delay_ms(100);
-		//volume = adc_to_volume();
-		//usart_tx(volume);
+		//level = adc_to_volume();
+		//usart_tx(level);
 		usart_tx(adc_data_pressure);
 		_delay_ms(100);
 		
@@ -147,37 +156,57 @@ int main(void)
 		_delay_ms(100);*/
 		
 		
-		/*cap_sen_t1_low_val = (PINE & (1 << cap_sen_t1_low)) >> cap_sen_t1_low;
-		_delay_ms(100);
+		cap_sen_t1_low_val = (PINE & (1 << cap_sen_t1_low)) >> cap_sen_t1_low;
+		cap_sen_t1_high_val = (PINE & (1 << cap_sen_t1_high)) >> cap_sen_t1_high;
+		cap_sen_t2_low_val = (PINC & (1 << cap_sen_t2_low)) >> cap_sen_t2_low;
+		cap_sen_t2_high_val = (PINC & (1 << cap_sen_t2_high)) >> cap_sen_t2_high;
+		cap_sen_pt_high_val = (PINC & (1 << cap_sen_pt_high)) >> cap_sen_pt_high;
+		
+		/*_delay_ms(100);
 		usart_tx(cap_sen_t1_low_val);
 		
 		/*_delay_ms(1000);
 		
-		cap_sen_t1_high_val = (PINE & (1 << cap_sen_t1_high)) >> cap_sen_t1_high;
+		
 		_delay_ms(100);
 		usart_tx(cap_sen_t1_high_val);
 		
 		_delay_ms(1000);
 		
-		cap_sen_t2_low_val = (PINC & (1 << cap_sen_t2_low)) >> cap_sen_t2_low;
+		
 		_delay_ms(100);
 		usart_tx(cap_sen_t2_low_val);
 		
 		_delay_ms(1000);
 		
-		cap_sen_t2_high_val = (PINC & (1 << cap_sen_t2_high)) >> cap_sen_t2_high;
+		
 		_delay_ms(100);
 		usart_tx(cap_sen_t2_high_val);
 		
 		_delay_ms(1000);
 		
-		cap_sen_pt_high_val = (PINC & (1 << cap_sen_pt_high)) >> cap_sen_pt_high;
+		
 		_delay_ms(100);
 		usart_tx(cap_sen_pt_high_val);
 		
 		_delay_ms(1000);*/
 		
 		//uart_transmit();
+		
+		
+		
+		adc_write_pressure();		//Trigger ADC conversion
+		volume = adc_to_volume();
+		_delay_ms(100);
+		
+		/*adc_write_temperature();
+		//printf("value in variable: %d\n\r",adc_data_temperature);
+		_delay_ms(100);
+		temperature = adc_to_temperature();
+		printf("temperature: %d\n\r", temperature);*/
+		
+		
+		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
 		
 		
 		//Step 0
@@ -199,11 +228,11 @@ int main(void)
 			wp2_speed_process = wp2_speed;
 			printf("WP2 speed: %d\n\r", wp2_speed_process);
 			
-			volume_t1_process = volume_t1;
-			printf("volume product 1: %d\n\r", volume_t1_process);
+			volume_product_1 = level_t1 * 13;
+			printf("volume product 1: %d\n\r", volume_product_1);
 			
-			volume_t2_process = volume_t2;
-			printf("volume product 2: %d\n\r", volume_t2_process);
+			volume_product_2 = level_t2 * 13;
+			printf("volume product 2: %d\n\r", volume_product_2);
 			
 			temperature_process = temperature;
 			printf("temperature: %d\n\r", temperature_process);
@@ -214,28 +243,61 @@ int main(void)
 			adc_write_pressure();		//Trigger ADC conversion
 			_delay_ms(100);
 			volume = adc_to_volume();
-			printf("volume process tank: %d\n\r", volume);
+			//printf("level process tank: %d\n\r", volume);
 			
 			_delay_ms(1000);
 		}
 		
-		adc_write_pressure();		//Trigger ADC conversion
-		_delay_ms(100);
-		volume = adc_to_volume();
-		printf("volume process tank: %d\n\r", volume);
 		
-		if(step == 1 && start == 1 && stop == 0 && cap_sen_t1_low == 0 && volume <= 100){
+		if(step == 1 && start == 1 && stop == 0 && cap_sen_t1_low_val == 0 && real_volume <= 100){
 			
 			step = 2;
 			printf("Step: %d\n\r", step);
 			_delay_ms(1000);
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
-			printf("percentage value: %d", percentage);
+			printf("percentage value: %d\n\r", percentage);
 			water_p1_start(percentage);
-		
 			
-	
+			
+			
 		}
+		
+		if(step == 2 && start == 1 && stop == 0 && cap_sen_t1_low_val == 0 && real_volume >= volume_product_1){
+			
+			step = 3;
+			printf("Step: %d\n\r", step);
+			_delay_ms(1000);
+			percentage = numeric_to_percentage_wps(wp1_speed_process);
+			//printf("percentage value: %d\n\r", percentage);
+			water_p1_stop(percentage);
+		}
+		
+		
+		if(step == 3 && start == 1 && stop == 0 && cap_sen_t2_low_val == 0 && real_volume >= volume_product_1){
+			
+			step = 4;
+			printf("Step: %d\n\r", step);
+			_delay_ms(1000);
+			percentage = numeric_to_percentage_wps(wp2_speed_process);
+			printf("percentage value: %d\n\r", percentage);
+			water_p2_start(percentage);
+			
+		}
+		
+		if(step == 4 && start == 1 && stop == 0 && cap_sen_t2_low_val == 0 && real_volume >= (volume_product_1 + volume_product_2)){
+			
+			step = 5;
+			printf("Step: %d\n\r", step);
+			_delay_ms(1000);
+			percentage = numeric_to_percentage_wps(wp2_speed_process);
+			printf("percentage value: %d\n\r", percentage);
+			water_p2_stop(percentage);
+			
+			
+			
+			
+		}
+		
 		
 	}
 	return 0;
@@ -354,16 +416,34 @@ void water_p1_start(int max){
 	int m;
 	for(m = 0; m <= max; m++){
 		water_p1 = m;
-		_delay_ms(2);				//Ensures that the loop completes within 3 seconds.
+		_delay_ms(3);				//Ensures that the loop completes within 4 seconds.
 					
 	}
 }
 
 void water_p1_stop(int max){
 	int s;
-	for(s = max; s = 0; s--){
+	for(s = max; s >= 0; s--){
 		water_p1 = s;
-		_delay_ms(40);				//Ensures that the loop completes within 3 seconds.
+		_delay_ms(3);				//Ensures that the loop completes within 3 seconds.
+	}
+	
+}
+
+void water_p2_start(int max){
+	int m;
+	for(m = 0; m <= max; m++){
+		water_p2 = m;
+		_delay_ms(3);				//Ensures that the loop completes within 4 seconds.
+		
+	}
+}
+
+void water_p2_stop(int max){
+	int s;
+	for(s = max; s >= 0; s--){
+		water_p2 = s;
+		_delay_ms(3);				//Ensures that the loop completes within 3 seconds.
 	}
 	
 }
@@ -447,16 +527,26 @@ void INT_init(void){
 	sei();								// Enable global interrupts
 }
 
-char adc_to_temperature(void){
+int adc_to_temperature(void){
 	int temperature_adc;
-	temperature_adc = ((int)adc_data_temperature * 100) / 255;
-	return (char)temperature_adc;
+	temperature_adc =(int)((adc_data_temperature - 2) * 100) / 255;					//the 3 is for fine tuning
+	return (int)temperature_adc;
 }
 
 int adc_to_volume(void){
-	int volume;
-	volume = ((float)adc_data_pressure - 1) * 7.86;
-	return (int)volume;
+	int level;
+	float adc_value;
+	
+	adc_value = ((float)adc_data_pressure * 0.0196078)  ;
+	//printf("adc_value: %2.2f\n\r", adc_value);
+	//printf("adc_value como int: %d\n\r", *(int *)&adc_value);
+	
+	level = (adc_value - 1) * 78.6;
+	
+	real_volume = level * 6.25;
+	printf("real volume: %d\n\r", real_volume);
+	
+	return (int)real_volume;
 }
 
 //-------------------------------------------------------------------
@@ -465,8 +555,6 @@ int adc_to_volume(void){
 void cap_sensors_init(void){
 	DDRE &= ~(1 << cap_sen_t1_low) & ~(1 << cap_sen_t1_high);
 	DDRC &= ~(1 << cap_sen_t2_low) & ~(1 << cap_sen_t2_high) & ~(1 << cap_sen_pt_high);
-	
-	return 0;
 }
 
 
@@ -489,8 +577,8 @@ ISR(USART_RX_vect){
 		else if (RxBuffer[0] == 0x4A){			//J
 			//printf("liquid level tank 1: ");
 			//printf("%x\n\r", RxBuffer[1]);
-			volume_t1 = RxBuffer[1];
-			printf("Tank 1 Volume: %d\n\r", volume_t1);
+			level_t1 = RxBuffer[1];
+			printf("Tank 1 Volume: %d\n\r", level_t1);
 		}
 	
 		else if (RxBuffer[0] == 0x3D){			//=
@@ -501,8 +589,8 @@ ISR(USART_RX_vect){
 		else if (RxBuffer[0] == 0x2C){			//,
 			//printf("liquid level tank 2: ");
 			//printf("%x\n\r", RxBuffer[1]);
-			volume_t2 = RxBuffer[1];
-			printf("Tank 2 Volume: %d\n\r", volume_t2);
+			level_t2 = RxBuffer[1];
+			printf("Tank 2 Volume: %d\n\r", level_t2);
 		}
 			
 		else if (RxBuffer[0] == 0x1F){			//unit separator alt+31
@@ -521,13 +609,14 @@ ISR(USART_RX_vect){
 			
 			//printf("%x\n\r", RxBuffer[1]);
 			start = RxBuffer[1];
-			printf("Indication: %d\n\r", start);
+			printf("Indication: START %d\n\r", start);
 		}
 		
-		else if (RxBuffer[0] == STOP){
+		else if (RxBuffer[0] == STOP){			//_
 			
 			stop = RxBuffer[1];
-			printf("Indication: %d\n\r", stop);
+			printf("Indication: STOP %d\n\r", stop);
+			//stop_actuators();
 			
 		}
 			

@@ -7,7 +7,7 @@
    stream_set_timeout($serialPort, 0);
    $clearData = fread($serialPort, 8192);
    
-   $value = 100;
+   $value = 67;
    fwrite($serialPort, chr($value));
    usleep(1000);
    fclose($serialPort);

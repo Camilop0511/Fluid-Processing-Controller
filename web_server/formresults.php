@@ -15,6 +15,13 @@
             );
             $port = fopen("/dev/ttyS0", "w");
 
+            // Set serial port settings
+            stream_set_write_buffer($port, 0);
+            stream_set_blocking($port, false);
+            stream_set_timeout($port, 1);
+            $serial_settings = "57600n8";
+            exec("stty -F /dev/ttyS0 $serial_settings");
+
             foreach ($values as $key => $value) {
                 $hexValue = dechex($value);
                 $bytes = str_split($hexValue, 2);

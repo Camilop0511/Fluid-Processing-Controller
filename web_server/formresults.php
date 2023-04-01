@@ -36,7 +36,7 @@
    exec('stty -F /dev/ttyS0 -echoke');
    exec('stty -F /dev/ttyS0 -crtscts');
    
-   $value = 67;
+   $value = $_POST['tank1']; // Obtain the value of tank1 using POST
    fwrite($serialPort, chr($value));
    usleep(1000);
    fclose($serialPort);

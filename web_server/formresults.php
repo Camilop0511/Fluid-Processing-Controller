@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>formresults.php</title>
+    </head>
+    <body> 
+        <p>
+            Liquid level tank1: <?= dechex((int)$_POST['tank1']); ?> 
+        </p> 
+    <body>
+</html>
+
 <?php
    $serialPort = fopen('/dev/ttyS0', 'w');
    system('stty -F /dev/ttyS0 57600');

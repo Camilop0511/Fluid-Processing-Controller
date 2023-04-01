@@ -48,10 +48,22 @@
    exec('stty -F /dev/ttyS0 -echoke');
    exec('stty -F /dev/ttyS0 -crtscts');*/
    
-   $value = $_POST['tank1']; // Obtain the value of tank1 using POST
+   /*$value = $_POST['tank1']; // Obtain the value of tank1 using POST
    fwrite($serialPort, chr($value));
    usleep(1000);
+   fclose($serialPort);*/
+
+   $byte1 = 0x23; // Put your fixed byte value here
+   $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
+   $dataToSend = array($byte1, $byte2); // Create an array with two bytes
+   
+   $dataToSend = implode(array_map("chr", $dataToSend)); // Convert array to string of characters
+   fwrite($serialPort, $dataToSend);
+   
+   usleep(1000);
    fclose($serialPort);
+
+
 ?>
 
 

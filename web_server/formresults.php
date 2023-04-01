@@ -1,12 +1,10 @@
 <?php
-    // Open the serial port
-    $serialPort = fopen('/dev/ttyUSB0', 'w');
-
-    // Send the letter "T"
-    fwrite($serialPort, 'T');
-
-    // Close the serial port
-    fclose($serialPort);
+   $serialPort = fopen('/dev/ttyS0', 'w');
+   system('stty -F /dev/ttyS0 57600');
+   $value = 100;
+   fwrite($serialPort, chr($value));
+   usleep(1000);
+   fclose($serialPort);
 ?>
 
 

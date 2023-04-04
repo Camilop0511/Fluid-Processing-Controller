@@ -103,10 +103,10 @@
    fwrite($serialPort, $temperature);
    
    usleep(2000);
-   $byte1 = 47; // Put your fixed byte value here
+   $byte1 = 14; // Put your fixed byte value here
    $byte2 = $_POST['sec']; // Receive the tank2 value through POST
    $cooldown = array($byte1, $byte2); // Create an array with two bytes
-   $temperature = implode(array_map("chr", $cooldown)); // Convert array to string of characters
+   $cooldown = implode(array_map("chr", $cooldown)); // Convert array to string of characters
    fwrite($serialPort, $cooldown);
 
 

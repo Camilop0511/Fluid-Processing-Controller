@@ -16,6 +16,9 @@
         <p>
             Water pump 2 speed: <?= dechex((int)$_POST['water_p2']); ?> 
         </p>
+        <p>
+            Set temperature: <?= dechex((int)$_POST['temp']); ?> 
+        </p>
     <body>
 </html>
 

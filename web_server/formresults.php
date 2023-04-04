@@ -7,6 +7,9 @@
         <p>
             Liquid level tank1: <?= dechex((int)$_POST['tank1']); ?> 
         </p> 
+        <p>
+            Liquid level tank2: <?= dechex((int)$_POST['tank2']); ?> 
+        </p> 
     <body>
 </html>
 
@@ -60,7 +63,7 @@
    fwrite($serialPort, $liquid_1);
    
    usleep(2000);
-   
+
    $byte1 = 74; // Put your fixed byte value here
    $byte2 = $_POST['tank2']; // Receive the tank2 value through POST
    $liquid_2 = array($byte1, $byte2); // Create an array with two bytes

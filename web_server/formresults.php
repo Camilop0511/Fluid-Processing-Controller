@@ -92,7 +92,13 @@
    $wp2_speed = implode(array_map("chr", $wp2_speed)); // Convert array to string of characters
    fwrite($serialPort, $wp2_speed);
 
+   usleep(2000);
 
+   $byte1 = 31; // Put your fixed byte value here
+   $byte2 = $_POST['temp']; // Receive the tank2 value through POST
+   $temperature = array($byte1, $byte2); // Create an array with two bytes
+   $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters
+   fwrite($serialPort, $temperature);
   
    
    usleep(1000);

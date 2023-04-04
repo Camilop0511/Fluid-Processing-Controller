@@ -5,7 +5,7 @@
     </head>
     <body> 
         <p>
-            Liquid level tank1: <?= dechex((int)$_POST['tank1']); ?> 
+            Liquid level tank1: <?= (int)$_POST['tank1']; ?> 
         </p> 
         <p>
             Liquid level tank2: <?= dechex((int)$_POST['tank2']); ?> 

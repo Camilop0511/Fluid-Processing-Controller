@@ -26,7 +26,7 @@
 </html>
 
 <?php
-   $serialPort = fopen('/dev/ttyS0', 'w');
+   /*$serialPort = fopen('/dev/ttyS0', 'w');
    system('stty -F /dev/ttyS0 57600');
    
    // Clear any existing data in the buffer
@@ -61,7 +61,7 @@
    exec('stty -F /dev/ttyS0 -echok');
    exec('stty -F /dev/ttyS0 -echoctl');
    exec('stty -F /dev/ttyS0 -echoke');
-   exec('stty -F /dev/ttyS0 -crtscts');
+   exec('stty -F /dev/ttyS0 -crtscts');*/
 
    $byte1 = 91; // Put your fixed byte value here
    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST

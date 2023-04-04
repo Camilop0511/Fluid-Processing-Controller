@@ -19,6 +19,9 @@
         <p>
             Set temperature: <?= dechex((int)$_POST['temp']); ?> 
         </p>
+        <p>
+            Cooldown Time: <?= dechex((int)$_POST['secs']); ?> 
+        </p>
     <body>
 </html>
 
@@ -72,7 +75,6 @@
    fwrite($serialPort, $liquid_1);
    
    usleep(2000);
-
    $byte1 = 74; // Put your fixed byte value here
    $byte2 = $_POST['tank2']; // Receive the tank2 value through POST
    $liquid_2 = array($byte1, $byte2); // Create an array with two bytes
@@ -80,7 +82,6 @@
    fwrite($serialPort, $liquid_2);*/
 
    usleep(2000);
-
    $byte1 = 61; // Put your fixed byte value here
    $byte2 = $_POST['water_p1']; // Receive the tank2 value through POST
    $wp1_speed = array($byte1, $byte2); // Create an array with two bytes
@@ -88,7 +89,6 @@
    fwrite($serialPort, $wp1_speed);
 
    usleep(2000);
-
    $byte1 = 44; // Put your fixed byte value here
    $byte2 = $_POST['water_p2']; // Receive the tank2 value through POST
    $wp2_speed = array($byte1, $byte2); // Create an array with two bytes
@@ -96,14 +96,27 @@
    fwrite($serialPort, $wp2_speed);
 
    usleep(2000);
-
    $byte1 = 31; // Put your fixed byte value here
    $byte2 = $_POST['temp']; // Receive the tank2 value through POST
    $temperature = array($byte1, $byte2); // Create an array with two bytes
    $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters
    fwrite($serialPort, $temperature);
   
+   usleep(2000);
+   $byte1 = 31; // Put your fixed byte value here
+   $byte2 = $_POST['temp']; // Receive the tank2 value through POST
+   $temperature = array($byte1, $byte2); // Create an array with two bytes
+   $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters
+   fwrite($serialPort, $temperature);
    
+   usleep(2000);
+   $byte1 = 14; // Put your fixed byte value here
+   $byte2 = $_POST['secs']; // Receive the tank2 value through POST
+   $cooldown = array($byte1, $byte2); // Create an array with two bytes
+   $temperature = implode(array_map("chr", $cooldown)); // Convert array to string of characters
+   fwrite($serialPort, $cooldown);
+
+
    usleep(1000);
    fclose($serialPort);
 

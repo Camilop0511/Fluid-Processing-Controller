@@ -57,7 +57,11 @@
    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
    $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
    
+   $byte1 = 74; // Put your fixed byte value here
+   $byte2 = $_POST['tank2']; // Receive the tank2 value through POST
+   $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
 
+   
 
 
 

@@ -53,7 +53,7 @@
    usleep(1000);
    fclose($serialPort);*/
 
-   $byte1 = 0x5B; // Put your fixed byte value here
+   $byte1 = 91; // Put your fixed byte value here
    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
    $dataToSend = array($byte1, $byte2); // Create an array with two bytes
    

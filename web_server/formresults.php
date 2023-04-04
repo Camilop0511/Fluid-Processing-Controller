@@ -13,6 +13,9 @@
         <p>
             Water pump 1 speed: <?= dechex((int)$_POST['water_p1']); ?> 
         </p>
+        <p>
+            Water pump 2 speed: <?= dechex((int)$_POST['water_p2']); ?> 
+        </p>
     <body>
 </html>
 
@@ -81,7 +84,13 @@
    $wp1_speed = implode(array_map("chr", $wp1_speed)); // Convert array to string of characters
    fwrite($serialPort, $wp1_speed);
 
+   usleep(2000);
 
+   $byte1 = 44; // Put your fixed byte value here
+   $byte2 = $_POST['water_p2']; // Receive the tank2 value through POST
+   $wp2_speed = array($byte1, $byte2); // Create an array with two bytes
+   $wp2_speed = implode(array_map("chr", $wp2_speed)); // Convert array to string of characters
+   fwrite($serialPort, $wp2_speed);
 
 
   

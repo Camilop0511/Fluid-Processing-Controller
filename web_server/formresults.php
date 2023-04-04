@@ -56,18 +56,22 @@
    $byte1 = 91; // Put your fixed byte value here
    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
    $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
+   $liquid_1 = implode(array_map("chr", $liquid_1)); // Convert array to string of characters
+   fwrite($serialPort, $liquid_1);
+   
+   usleep(2000);
    
    $byte1 = 74; // Put your fixed byte value here
    $byte2 = $_POST['tank2']; // Receive the tank2 value through POST
-   $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
-
-   
-
-
+   $liquid_2 = array($byte1, $byte2); // Create an array with two bytes
+   $liquid_2 = implode(array_map("chr", $liquid_2)); // Convert array to string of characters
+   fwrite($serialPort, $liquid_2);
 
 
-   $liquid_1 = implode(array_map("chr", $liquid_1)); // Convert array to string of characters
-   fwrite($serialPort, $liquid_1);
+
+
+
+  
    
    usleep(1000);
    fclose($serialPort);

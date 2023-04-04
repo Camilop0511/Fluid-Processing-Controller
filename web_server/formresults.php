@@ -8,19 +8,19 @@
             Liquid level tank1: <?= (int)$_POST['tank1']; ?> 
         </p> 
         <p>
-            Liquid level tank2: <?= dechex((int)$_POST['tank2']); ?> 
+            Liquid level tank2: <?= (int)$_POST['tank2']; ?> 
         </p> 
         <p>
-            Water pump 1 speed: <?= dechex((int)$_POST['water_p1']); ?> 
+            Water pump 1 speed: <?= (int)$_POST['water_p1']; ?> 
         </p>
         <p>
-            Water pump 2 speed: <?= dechex((int)$_POST['water_p2']); ?> 
+            Water pump 2 speed: <?= (int)$_POST['water_p2']; ?> 
         </p>
         <p>
-            Set temperature: <?= dechex((int)$_POST['temp']); ?> 
+            Set temperature: <?= (int)$_POST['temp']; ?> 
         </p>
         <p>
-            Cooldown Time: <?= dechex((int)$_POST['sec']); ?> 
+            Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
     <body>
 </html>
@@ -79,7 +79,7 @@
    $byte2 = $_POST['tank2']; // Receive the tank2 value through POST
    $liquid_2 = array($byte1, $byte2); // Create an array with two bytes
    $liquid_2 = implode(array_map("chr", $liquid_2)); // Convert array to string of characters
-   fwrite($serialPort, $liquid_2);*/
+   fwrite($serialPort, $liquid_2);
 
    usleep(2000);
    $byte1 = 61; // Put your fixed byte value here
@@ -93,15 +93,8 @@
    $byte2 = $_POST['water_p2']; // Receive the tank2 value through POST
    $wp2_speed = array($byte1, $byte2); // Create an array with two bytes
    $wp2_speed = implode(array_map("chr", $wp2_speed)); // Convert array to string of characters
-   fwrite($serialPort, $wp2_speed);
+   fwrite($serialPort, $wp2_speed);*/
 
-   /*usleep(2000);
-   $byte1 = 31; // Put your fixed byte value here
-   $byte2 = $_POST['temp']; // Receive the tank2 value through POST
-   $temperature = array($byte1, $byte2); // Create an array with two bytes
-   $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters
-   fwrite($serialPort, $temperature);
-  
    usleep(2000);
    $byte1 = 31; // Put your fixed byte value here
    $byte2 = $_POST['temp']; // Receive the tank2 value through POST
@@ -114,7 +107,7 @@
    $byte2 = $_POST['sec']; // Receive the tank2 value through POST
    $cooldown = array($byte1, $byte2); // Create an array with two bytes
    $temperature = implode(array_map("chr", $cooldown)); // Convert array to string of characters
-   fwrite($serialPort, $cooldown);*/
+   fwrite($serialPort, $cooldown);
 
 
    usleep(1000);

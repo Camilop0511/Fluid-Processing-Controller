@@ -84,14 +84,14 @@
    fwrite($serialPort, $wp1_speed);
    usleep(5000);
 
-   /*$byte1 = 44; // Put your fixed byte value here
+   $byte1 = 61; // Put your fixed byte value here
    $byte2 = $_POST['water_p2']; // Receive the tank2 value through POST
    $wp2_speed = array($byte1, $byte2); // Create an array with two bytes
    $wp2_speed = implode(array_map("chr", $wp2_speed)); // Convert array to string of characters
    fwrite($serialPort, $wp2_speed);
    usleep(5000);
 
-   $byte1 = 31; // Put your fixed byte value here
+   /*$byte1 = 31; // Put your fixed byte value here
    $byte2 = $_POST['temp']; // Receive the tank2 value through POST
    $temperature = array($byte1, $byte2); // Create an array with two bytes
    $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters

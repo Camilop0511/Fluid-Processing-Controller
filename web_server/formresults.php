@@ -63,7 +63,7 @@
    exec('stty -F /dev/ttyS0 -echoke');
    exec('stty -F /dev/ttyS0 -crtscts');*/
 
-   $byte1 = 91; // Put your fixed byte value here
+   $byte1 = 74; // Put your fixed byte value here
    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
    $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
    $liquid_1 = implode(array_map("chr", $liquid_1)); // Convert array to string of characters

@@ -63,28 +63,28 @@
    exec('stty -F /dev/ttyS0 -echoke');
    exec('stty -F /dev/ttyS0 -crtscts');*/
 
-   $byte1 = 74; // Put your fixed byte value here
+   $byte1 = 91; // Put your fixed byte value here
    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
    $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
    $liquid_1 = implode(array_map("chr", $liquid_1)); // Convert array to string of characters
    fwrite($serialPort, $liquid_1);
    usleep(5000);
 
-   $byte1 = 44; // Put your fixed byte value here
+   /*$byte1 = 74; // Put your fixed byte value here
    $byte2 = $_POST['tank2']; // Receive the tank2 value through POST
    $liquid_2 = array($byte1, $byte2); // Create an array with two bytes
    $liquid_2 = implode(array_map("chr", $liquid_2)); // Convert array to string of characters
    fwrite($serialPort, $liquid_2);
    usleep(5000);
 
-   $byte1 = 91; // Put your fixed byte value here
+   $byte1 = 61; // Put your fixed byte value here
    $byte2 = $_POST['water_p1']; // Receive the tank2 value through POST
    $wp1_speed = array($byte1, $byte2); // Create an array with two bytes
    $wp1_speed = implode(array_map("chr", $wp1_speed)); // Convert array to string of characters
    fwrite($serialPort, $wp1_speed);
    usleep(5000);
 
-   $byte1 = 61; // Put your fixed byte value here
+   $byte1 = 44; // Put your fixed byte value here
    $byte2 = $_POST['water_p2']; // Receive the tank2 value through POST
    $wp2_speed = array($byte1, $byte2); // Create an array with two bytes
    $wp2_speed = implode(array_map("chr", $wp2_speed)); // Convert array to string of characters
@@ -110,12 +110,18 @@
    $start = array($byte1, $byte2); // Create an array with two bytes
    $start = implode(array_map("chr", $start)); // Convert array to string of characters
    fwrite($serialPort, $start);
-   usleep(5000);
+   usleep(5000);*/
 
    fclose($serialPort);
 
 
 ?>
+
+
+
+
+
+
 
 
 

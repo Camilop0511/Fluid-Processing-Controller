@@ -25,6 +25,11 @@
         <p>
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
+
+        <form method="post" action="controlpanel.php">
+            <input type="submit" name="start" value="Start">
+            <input type="submit" name="stop" value="Stop">
+        </form>
     <body>
 </html>
 

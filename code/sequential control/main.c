@@ -32,6 +32,7 @@
 #define com6 0x0E	//Waiting time
 #define START 0x0A	//Start indication 
 #define STOP 0x5F
+#define SERVE 0x1B
 
 //Function prototypes
 void usart_init(void);
@@ -76,10 +77,13 @@ int wp1_speed;
 int wp2_speed;
 int level_t1;
 int level_t2;
-int temperature;
+int real_temperature;
+int user_temperature;
+int hres_power;
 int waiting_time;
 int start = 0;
 int stop = 0;
+int serve = 0;
 int real_volume;
 int volumen_segun_tanque;
 
@@ -115,7 +119,9 @@ int main(void)
 	int volume_product_1;
 	int volume_product_2;
 	int temperature_process;
+	int hres_process;
 	int waiting_time_process;
+	int cooldown_delay;
 	
 	int cap_sen_t1_low_val;
 	int cap_sen_t1_high_val;
@@ -200,23 +206,25 @@ int main(void)
 		volume = adc_to_volume();
 		_delay_ms(100);
 		
-		/*adc_write_temperature();
+		adc_write_temperature();
 		//printf("value in variable: %d\n\r",adc_data_temperature);
+		real_temperature = adc_to_temperature();
 		_delay_ms(100);
-		temperature = adc_to_temperature();
-		printf("temperature: %d\n\r", temperature);*/
+		printf("temperature: %d\n\r", real_temperature);
 		
 		
 		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
 		
 		
 		//Step 0
+		//Waits for serial values from Raspberry Pi
 		if(step == 0){
 			printf("Step: %d\n\r", step);
 				_delay_ms(1000);
 			}
 
-		
+		//Step1
+		//Transfers serial variables to process values
 		if(step == 0 && start == 1 && stop == 0){ 
 			
 			step = 1;
@@ -235,8 +243,11 @@ int main(void)
 			volume_product_2 = level_t2 * 13;
 			printf("volume product 2: %d\n\r", volume_product_2);
 			
-			temperature_process = temperature;
+			temperature_process = user_temperature;
 			printf("temperature: %d\n\r", temperature_process);
+			
+			hres_process = hres_power;
+			printf("Heating Resistance Power: %d\n\r", hres_process);
 			
 			waiting_time_process = waiting_time;
 			printf("waiting time: %d\n\r", waiting_time_process);
@@ -249,20 +260,20 @@ int main(void)
 			_delay_ms(1000);
 		}
 		
-		
+		//Step 2
+		//Starts Water Pump 1
 		if(step == 1 && start == 1 && stop == 0 && cap_sen_t1_low_val == 0 && real_volume <= 100){
 			
 			step = 2;
 			printf("Step: %d\n\r", step);
 			_delay_ms(1000);
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
-			printf("percentage value: %d\n\r", percentage);
-			water_p1_start(percentage);
-			
-			
-			
+			//printf("percentage value: %d\n\r", percentage);
+			water_p1_start(percentage);	
 		}
 		
+		//Step 3
+		//Stops Water Pump 1
 		if(step == 2 && start == 1 && stop == 0 && cap_sen_t1_low_val == 0 && real_volume >= volume_product_1){
 			
 			step = 3;
@@ -273,32 +284,86 @@ int main(void)
 			water_p1_stop(percentage);
 		}
 		
-		
+		//Step 4
+		//Starts Water Pump 2
 		if(step == 3 && start == 1 && stop == 0 && cap_sen_t2_low_val == 0 && real_volume >= volume_product_1){
 			
 			step = 4;
 			printf("Step: %d\n\r", step);
 			_delay_ms(1000);
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
-			printf("percentage value: %d\n\r", percentage);
-			water_p2_start(percentage);
-			
+			//printf("percentage value: %d\n\r", percentage);
+			water_p2_start(percentage);	
 		}
 		
+		//Step 5
+		//Stop Water Pump 2
 		if(step == 4 && start == 1 && stop == 0 && cap_sen_t2_low_val == 0 && real_volume >= (volume_product_1 + volume_product_2)){
 			
 			step = 5;
 			printf("Step: %d\n\r", step);
 			_delay_ms(1000);
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
-			printf("percentage value: %d\n\r", percentage);
-			water_p2_stop(percentage);
-			
-			
-			
-			
+			//printf("percentage value: %d\n\r", percentage);
+			water_p2_stop(percentage);	
 		}
 		
+		//Step 6
+		//Start Heating Resistance
+		if(step == 5 && start == 1 && stop == 0 &&  real_temperature <= temperature_process){
+			
+			step = 6;
+			printf("Step: %d\n\r", step);
+			_delay_ms(1000);
+			percentage = numeric_to_percentage_h_res(hres_process);
+			h_resis = percentage;
+		}
+		
+		//Step 7
+		//Stop Heating Resistance
+		if(step == 6 && start == 1 && stop == 0 &&  real_temperature >= temperature_process){
+			
+			step = 7;
+			printf("Step: %d\n\r", step);
+			_delay_ms(1000);
+			h_resis = 0;
+		}
+		
+		//Step 8
+		//Cooltime
+		if(step == 7 && start == 1 && stop == 0){
+			
+			step = 8;
+			printf("Step: %d\n\r", step);
+			
+			for(cooldown_delay = 0; cooldown_delay <= waiting_time_process; cooldown_delay++){
+				_delay_ms(1000);
+				printf("%d\n\r", cooldown_delay);
+			}
+			printf("Time Completed\n\r");
+		}
+		
+		//Step 9
+		//Liquid Serving
+		if(step == 8 && start == 1 && stop == 0 && serve == 1){
+			
+			step = 9;
+			printf("Step: %d\n\r", step);
+			electro_v_state(1);	
+		}
+		
+		//Step 10
+		//Liquid Serving
+		if(step == 9 && start == 1 && stop == 0 && real_volume <= 100){
+			
+			step = 10;
+			printf("Step: %d\n\r", step);
+			electro_v_state(0);
+			//printf("Process Completed");
+			_delay_ms(3000);
+			start = 0;
+			step = 0;	
+		}
 		
 	}
 	return 0;
@@ -549,11 +614,12 @@ int adc_to_volume(void){
 	//real_volume = level * 6.25;
 	//real_volume = level * 6;
 	real_volume = (level * 6.24824) - 9.16149;
+	
 	printf("real volume: %d\n\r", real_volume);
 	
-	volumen_segun_tanque = (level * 6.32878) - 2.08289;
-	printf("volumen segun tanque: %d\n\r", volumen_segun_tanque);
-	
+	//volumen_segun_tanque = (level * 6.32878) - 2.08289;
+	//printf("volumen segun tanque: %d\n\n\r", volumen_segun_tanque);
+	//printf("vst: %d\n\r", volumen_segun_tanque);
 	
 	
 	return (int)real_volume;
@@ -605,8 +671,14 @@ ISR(USART_RX_vect){
 			
 		else if (RxBuffer[0] == 0x1F){			//unit separator alt+31
 			//printf("%x\n\r", RxBuffer[1]);
-			temperature = RxBuffer[1];
-			printf("Liquid's Temperature: %d\n\r", temperature);
+			user_temperature = RxBuffer[1];
+			printf("Liquid's Temperature: %d\n\r", user_temperature);
+		}
+		
+		else if (RxBuffer[0] == 0x4E){			//N
+			//printf("%x\n\r", RxBuffer[1]);
+			hres_power = RxBuffer[1];
+			//printf("Heating Resistance Power: %d\n\r",hres_power);
 		}
 		
 		else if (RxBuffer[0] == 0x0E){			//shiftout alt+14
@@ -627,7 +699,13 @@ ISR(USART_RX_vect){
 			stop = RxBuffer[1];
 			printf("Indication: STOP %d\n\r", stop);
 			//stop_actuators();
+		}
+		
+		else if (RxBuffer[0] == SERVE){			//
 			
+			serve = RxBuffer[1];
+			//printf("Indication: SERVE %d\n\r", serve);
+			//stop_actuators();	
 		}
 			
 		

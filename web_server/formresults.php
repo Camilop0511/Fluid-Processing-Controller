@@ -26,31 +26,30 @@ if(isset($_POST['stop'])) {
         <title>formresults.php</title>
     </head>
     <body> 
-        <p>
-            Liquid level tank1: <?= (int)$_POST['tank1']; ?> 
-        </p> 
-        <p>
-            Liquid level tank2: <?= (int)$_POST['tank2']; ?> 
-        </p> 
-        <p>
-            Water pump 1 speed: <?= (int)$_POST['water_p1']; ?> 
-        </p>
-        <p>
-            Water pump 2 speed: <?= (int)$_POST['water_p2']; ?> 
-        </p>
-        <p>
-            Set temperature: <?= (int)$_POST['temp']; ?> 
-        </p>
-        <p>
-            Heating Resistance Power: <?= (int)$_POST['hres']; ?> 
-        </p>
-        <p>
-            Cooldown Time: <?= (int)$_POST['sec']; ?> 
-        </p>
-
         <form method="post" action="formresults.php">
             <button type="submit" name="start">Start</button>
             <button type="submit" name="stop">Stop</button>
+            <p>
+                Liquid level tank1: <?= (int)$_POST['tank1']; ?> 
+            </p> 
+            <p>
+                Liquid level tank2: <?= (int)$_POST['tank2']; ?> 
+            </p> 
+            <p>
+                Water pump 1 speed: <?= (int)$_POST['water_p1']; ?> 
+            </p>
+            <p>
+                Water pump 2 speed: <?= (int)$_POST['water_p2']; ?> 
+            </p>
+            <p>
+                Set temperature: <?= (int)$_POST['temp']; ?> 
+            </p>
+            <p>
+                Heating Resistance Power: <?= (int)$_POST['hres']; ?> 
+            </p>
+            <p>
+                Cooldown Time: <?= (int)$_POST['sec']; ?> 
+            </p>
         </form>
     <body>
 </html>

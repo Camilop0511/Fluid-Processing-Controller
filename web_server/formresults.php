@@ -103,7 +103,7 @@
    $cooldown = array($byte1, $byte2); // Create an array with two bytes
    $cooldown = implode(array_map("chr", $cooldown)); // Convert array to string of characters
    fwrite($serialPort, $cooldown);
-   usleep(10000);
+   usleep(500);
 
    $byte1 = 10; // Put your fixed byte value here
    $byte2 = 1; // Receive the tank2 value through POST

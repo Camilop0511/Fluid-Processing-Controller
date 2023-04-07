@@ -8,6 +8,7 @@ if(isset($_POST['stop'])) {
     // Code to execute when button 2 is pressed
     echo "Button 2 was pressed!";
 }
+?>
 
 <!DOCTYPE html>
 <html>

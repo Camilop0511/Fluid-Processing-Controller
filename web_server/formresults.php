@@ -66,11 +66,15 @@
    exec('stty -F /dev/ttyS0 -echoke');
    exec('stty -F /dev/ttyS0 -crtscts');*/
 
-   $byte1 = 74; // Put your fixed byte value here
-   $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
-   $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
-   $liquid_1 = implode(array_map("chr", $liquid_1)); // Convert array to string of characters
-   fwrite($serialPort, $liquid_1);
+    $byte1 = 74; // Put your fixed byte value here
+    $byte2 = $_POST['tank1']; // Receive the tank1 value through POST
+    $liquid_1 = array($byte1, $byte2); // Create an array with two bytes
+
+    // Loop through the array and send each byte with a delay between them
+    foreach ($liquid_1 as $byte) {
+        fwrite($serialPort, chr($byte));
+        usleep(5000); // Delay between bytes in microseconds
+    }
    usleep(5000);
 
    $byte1 = 44; // Put your fixed byte value here

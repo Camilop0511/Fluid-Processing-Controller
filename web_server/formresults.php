@@ -1,8 +1,8 @@
 <?php
 if(isset($_POST['start'])) {
 
-    $serialPort = fopen('/dev/ttyS0', 'w');
-    system('stty -F /dev/ttyS0 57600');
+    /*$serialPort = fopen('/dev/ttyS0', 'w');
+    system('stty -F /dev/ttyS0 57600');*/
 
    $byte1 = 10; // Put your fixed byte value here
    $byte2 = 1; // Receive the tank2 value through POST
@@ -148,7 +148,7 @@ if(isset($_POST['stop'])) {
    fwrite($serialPort, $cooldown);
    usleep(5000);
 
-   fclose($serialPort);
+   //fclose($serialPort);
 
 
 ?>

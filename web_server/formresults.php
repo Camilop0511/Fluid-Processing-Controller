@@ -1,57 +1,43 @@
-<?php
-if(isset($_POST['start'])) {
-
-    $serialPort = fopen('/dev/ttyS0', 'w');
-    system('stty -F /dev/ttyS0 57600');
-
-   $byte1 = 10; // Put your fixed byte value here
-   $byte2 = 1; // Receive the tank2 value through POST
-   $start = array($byte1, $byte2); // Create an array with two bytes
-   $start = implode(array_map("chr", $start)); // Convert array to string of characters
-   fwrite($serialPort, $start);
-   usleep(5000);
-
-   fclose($serialPort);
-}
-
-if(isset($_POST['stop'])) {
-    // Code to execute when button 2 is pressed
-    echo "Button 2 was pressed!";
-}
-?>
-
 <!DOCTYPE html>
 <html>
     <head>
         <title>formresults.php</title>
     </head>
     <body> 
-        <form method="post" action="formresults.php">
-            <button type="submit" name="start">Start</button>
-            <button type="submit" name="stop">Stop</button>
-            <p>
-                Liquid level tank1: <?= (int)$_POST['tank1']; ?> 
-            </p> 
-            <p>
-                Liquid level tank2: <?= (int)$_POST['tank2']; ?> 
-            </p> 
-            <p>
-                Water pump 1 speed: <?= (int)$_POST['water_p1']; ?> 
-            </p>
-            <p>
-                Water pump 2 speed: <?= (int)$_POST['water_p2']; ?> 
-            </p>
-            <p>
-                Set temperature: <?= (int)$_POST['temp']; ?> 
-            </p>
-            <p>
-                Heating Resistance Power: <?= (int)$_POST['hres']; ?> 
-            </p>
-            <p>
-                Cooldown Time: <?= (int)$_POST['sec']; ?> 
-            </p>
-        </form>
+        <p>
+            Liquid level tank1: <?= (int)$_POST['tank1']; ?> 
+        </p> 
+        <p>
+            Liquid level tank2: <?= (int)$_POST['tank2']; ?> 
+        </p> 
+        <p>
+            Water pump 1 speed: <?= (int)$_POST['water_p1']; ?> 
+        </p>
+        <p>
+            Water pump 2 speed: <?= (int)$_POST['water_p2']; ?> 
+        </p>
+        <p>
+            Set temperature: <?= (int)$_POST['temp']; ?> 
+        </p>
+        <p>
+            Heating Resistance Power: <?= (int)$_POST['hres']; ?> 
+        </p>
+        <p>
+            Cooldown Time: <?= (int)$_POST['sec']; ?> 
+        </p>
+
+        <button onclick="start_process()">Start</button>
     <body>
+
+    <script>
+    //AJAX application that asynchronously retrieves and displays contents of the gpio.php file
+        function start_process() {
+            var xhttp = new XMLHttpRequest();   //Creates a XMLHttpRequest object
+            xhttp.open("GET", "start.php"); //Sends a request
+            xhttp.send();
+        }   
+    </script>
+
 </html>
 
 <?php
@@ -130,7 +116,7 @@ if(isset($_POST['stop'])) {
    $byte2 = $_POST['temp']; // Receive the tank2 value through POST
    $temperature = array($byte1, $byte2); // Create an array with two bytes
    $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters
-  fwrite($serialPort, $temperature);
+   fwrite($serialPort, $temperature);
    usleep(5000);
 
    $byte1 = 78; // Put your fixed byte value here
@@ -147,7 +133,12 @@ if(isset($_POST['stop'])) {
    fwrite($serialPort, $cooldown);
    usleep(5000);
 
+   $byte1 = 10; // Put your fixed byte value here
+   $byte2 = 1; // Receive the tank2 value through POST
+   $start = array($byte1, $byte2); // Create an array with two bytes
+   $start = implode(array_map("chr", $start)); // Convert array to string of characters
+   fwrite($serialPort, $start);
+   usleep(5000);
+
    fclose($serialPort);
-
-
 ?>

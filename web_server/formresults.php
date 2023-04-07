@@ -1,3 +1,14 @@
+<?php
+if(isset($_POST['start'])) {
+    // Code to execute when button 1 is pressed
+    echo "Button 1 was pressed!";
+}
+
+if(isset($_POST['stop'])) {
+    // Code to execute when button 2 is pressed
+    echo "Button 2 was pressed!";
+}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,7 +37,7 @@
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
 
-        <form method="post" action="controlpanel.php">
+        <form method="post" action="formresults.php">
             <input type="submit" name="start" value="Start">
             <input type="submit" name="stop" value="Stop">
         </form>

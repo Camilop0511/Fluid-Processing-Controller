@@ -1,7 +1,11 @@
 <?php
 if(isset($_POST['start'])) {
-    // Code to execute when button 1 is pressed
-    echo "Button 1 was pressed!";
+   $byte1 = 10; // Put your fixed byte value here
+   $byte2 = 1; // Receive the tank2 value through POST
+   $start = array($byte1, $byte2); // Create an array with two bytes
+   $start = implode(array_map("chr", $start)); // Convert array to string of characters
+   fwrite($serialPort, $start);
+   usleep(5000);
 }
 
 if(isset($_POST['stop'])) {
@@ -136,13 +140,6 @@ if(isset($_POST['stop'])) {
    $cooldown = array($byte1, $byte2); // Create an array with two bytes
    $cooldown = implode(array_map("chr", $cooldown)); // Convert array to string of characters
    fwrite($serialPort, $cooldown);
-   usleep(5000);
-
-   $byte1 = 10; // Put your fixed byte value here
-   $byte2 = 1; // Receive the tank2 value through POST
-   $start = array($byte1, $byte2); // Create an array with two bytes
-   $start = implode(array_map("chr", $start)); // Convert array to string of characters
-   fwrite($serialPort, $start);
    usleep(5000);
 
    fclose($serialPort);

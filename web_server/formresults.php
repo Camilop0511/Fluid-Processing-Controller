@@ -20,6 +20,9 @@
             Set temperature: <?= (int)$_POST['temp']; ?> 
         </p>
         <p>
+            Heating Resistance Power: <?= (int)$_POST['hres']; ?> 
+        </p>
+        <p>
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
     <body>
@@ -96,6 +99,13 @@
    $temperature = array($byte1, $byte2); // Create an array with two bytes
    $temperature = implode(array_map("chr", $temperature)); // Convert array to string of characters
    fwrite($serialPort, $temperature);
+   usleep(5000);
+
+   $byte1 = 78; // Put your fixed byte value here
+   $byte2 = $_POST['hres']; // Receive the tank2 value through POST
+   $resistance = array($byte1, $byte2); // Create an array with two bytes
+   $resistance = implode(array_map("chr", $resistance)); // Convert array to string of characters
+   fwrite($serialPort, $resistance);
    usleep(5000);
 
    $byte1 = 14; // Put your fixed byte value here

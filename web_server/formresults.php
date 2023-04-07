@@ -125,7 +125,7 @@
    $byte2 = 1; // Receive the tank2 value through POST
    $start = array($byte1, $byte2); // Create an array with two bytes
    $start = implode(array_map("chr", $start)); // Convert array to string of characters
-   fwrite($serialPort, $start);
+   //fwrite($serialPort, $start);
    fwrite($serialPort, $start);
    usleep(5000);
 

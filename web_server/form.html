@@ -6,39 +6,6 @@
     <body>
         <h1>Small-Scale Fluid Industrial Process </h1>
         <form action="formresults.php" method="POST">
-           <!-- <p>
-                Who were the two founders of The Beatles?<br>
-                <input type="checkbox" id="member1" name="member1" value="Paul">
-                <label for="member1">Paul McCartney</label><br>
-                <input type="checkbox" id="member2" name="member2" value="Ringo">
-                <label for="member2">Ringo Starr</label><br>
-                <input type="checkbox" id="member3" name="member3" value="John">
-                <label for="member3">John Lennon</label><br>
-                <input type="checkbox" id="member4" name="member4" value="George">
-                <label for="member4">George Harrison</label><br>
-
-            </p>
-            <p>
-                <label for="birthday">When was George Harrison born?</label>
-                <input type="date" id="birthday" name="birthday" required>
-            </p>
-            <p>
-                What instrument did Paul McCartney play in The Beatles?<br>
-                <input type="radio" id="drums" name="instrument" value="Drums" required>
-                <label for="drums">Drums</label><br>
-                <input type="radio" id="guitar" name="instrument" value="Guitar">
-                <label for="guitar">Guitar</label><br>
-                <input type="radio" id="bass" name="instrument" value="Bass">
-                <label for="bass">Bass</label><br>
-                <input type="radio" id="piano" name="instrument" value="Piano">
-                <label for="piano">Piano</label>
-            </p>-->
-
-            <!--<p>
-                <label for="t1">Please provide quantity of liquid for liquid 1:</label>
-                <input type="text" id="tank1" name="tank1" pattern="^([1-9]|[1-9][0-9]{2}|1[0-9]{3}|2000)$" 
-                onblur="requiredf(this)" placeholder="500" title="Values from 100ml to 2000mls only" required> ml
-            </p>-->
 
             <p>
                 <label for="t1">Please provide percentage of liquid for liquid 1:</label>
@@ -81,6 +48,13 @@
                 onblur="requiredf(this)" placeholder="80" title="Values from 60 to 100 only" required> &deg;C
 
             </p>
+            <p>
+                <label for="hres">Please enter the desired power percentage for heating resistor:</label>
+                <input type="text" id="hres" name="hres" pattern="^([1-9]|[1-9][0-9]|100)$" 
+                onblur="requiredf(this)" placeholder="50" title="Values from 10 to 100 only" required> &deg;C
+
+            </p>
+            <br>
 
             <p>
                 <label for="secs">Please enter the desired cool-down time before serving:</label>

@@ -26,7 +26,8 @@
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
 
-        <button onclick="start_process()">Start</button>
+        <button onclick="start_process()">Start Process</button>
+        <button onclick="serve()">Serve Liquid</button>
     <body>
 
     <script>
@@ -34,6 +35,14 @@
         function start_process() {
             var xhttp = new XMLHttpRequest();   //Creates a XMLHttpRequest object
             xhttp.open("GET", "start.php"); //Sends a request
+            xhttp.send();
+        }   
+    </script>
+    <script>
+    //AJAX application that asynchronously retrieves and displays contents of the gpio.php file
+        function serve() {
+            var xhttp = new XMLHttpRequest();   //Creates a XMLHttpRequest object
+            xhttp.open("GET", "serve.php"); //Sends a request
             xhttp.send();
         }   
     </script>

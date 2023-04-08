@@ -361,6 +361,7 @@ int main(void)
 			electro_v_state(0);
 			//printf("Process Completed");
 			_delay_ms(3000);
+			serve = 0;
 			start = 0;
 			step = 0;	
 		}

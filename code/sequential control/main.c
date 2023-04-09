@@ -18,7 +18,7 @@
 #define WR_ADC PINC5
 #define CS_ADC_TEMPERATURE PINC4
 
-#define cap_sen_t1_low PE0
+#define cap_sen_t1_low PB1
 #define cap_sen_t1_high PE1
 #define cap_sen_t2_low PC3
 #define cap_sen_t2_high PC2
@@ -30,9 +30,16 @@
 #define com4 0x2C	//Liquid level tank 2
 #define com5 0x1F	//Liquid temperature
 #define com6 0x0E	//Waiting time
-#define START 0x0A	//Start indication 
-#define STOP 0x5F
-#define SERVE 0x1B
+#define START 0x0A	//Start Indication 
+#define STOP 0x5F	//Stop Indication
+#define SERVE 0x1B	//Serve Indication 
+
+//Defines for control panel
+#define start_led PB2
+#define stop_led PB3
+#define serve_led PB4
+#define start_signal PD4
+#define serve_signal PD6
 
 //Function prototypes
 void usart_init(void);
@@ -54,7 +61,9 @@ int adc_to_temperature(void);
 int adc_to_volume(void);
 void ISR_INT0_vect(void);
 void ISR_INT1_vect(void);
+void ISR_INT2_vect(void);
 void USART_RX_vect(void);
+void control_panel_init(void);
 
 void cap_sensors_init(void);
 void uart_transmit(void);
@@ -65,9 +74,7 @@ void water_p2_start(int);
 void water_p2_stop(int);
 void stop_actuators(void);
 
-
-
-//Global variable
+//Global variables
 unsigned int step = 0;	
 int adc_data_pressure;
 int adc_data_temperature;
@@ -86,6 +93,9 @@ int stop = 0;
 int serve = 0;
 int real_volume;
 int volumen_segun_tanque;
+int cd_counter;
+
+
 
 
 static FILE mystdout = FDEV_SETUP_STREAM(USART_printCHAR, NULL, _FDEV_SETUP_WRITE);
@@ -110,6 +120,7 @@ int main(void)
 	adc_init();
 	INT_init();
 	cap_sensors_init();
+	control_panel_init();
 	
 	wp1_speed = 0;
 
@@ -121,13 +132,17 @@ int main(void)
 	int temperature_process;
 	int hres_process;
 	int waiting_time_process;
-	int cooldown_delay;
+	//int cd_ctr;
+	
+	
 	
 	int cap_sen_t1_low_val;
 	int cap_sen_t1_high_val;
 	int cap_sen_t2_low_val;
 	int cap_sen_t2_high_val;
 	int cap_sen_pt_high_val;
+	
+	int start_signal_value;
 	
 	while (1)
 	{
@@ -163,7 +178,7 @@ int main(void)
 		_delay_ms(100);*/
 		
 		
-		cap_sen_t1_low_val = (PINE & (1 << cap_sen_t1_low)) >> cap_sen_t1_low;
+		cap_sen_t1_low_val = (PINB & (1 << cap_sen_t1_low)) >> cap_sen_t1_low;
 		cap_sen_t1_high_val = (PINE & (1 << cap_sen_t1_high)) >> cap_sen_t1_high;
 		cap_sen_t2_low_val = (PINC & (1 << cap_sen_t2_low)) >> cap_sen_t2_low;
 		cap_sen_t2_high_val = (PINC & (1 << cap_sen_t2_high)) >> cap_sen_t2_high;
@@ -204,16 +219,37 @@ int main(void)
 		
 		adc_write_pressure();		//Trigger ADC conversion
 		volume = adc_to_volume();
-		_delay_ms(100);
+		printf("Real volume: %d\n\r", volume);
+		_delay_ms(10);
+		
 		
 		adc_write_temperature();
 		//printf("value in variable: %d\n\r",adc_data_temperature);
 		real_temperature = adc_to_temperature();
-		_delay_ms(100);
+		_delay_ms(10);
 		printf("temperature: %d\n\r", real_temperature);
 		
 		
 		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
+		
+		
+		start_signal_value = (PIND & (1 << start_signal)) >> start_signal;
+		if (start_signal_value == 1 && wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
+		&& hres_power != 0 && waiting_time != 0){
+			_delay_ms(100);
+			stop = 0;
+			start = 1;
+			
+			if (step >= 1)		//For stop indication
+			step = step - 1;
+		}
+		
+		printf("%d\n\r", start);
+		_delay_ms(100);
+		printf("%d\n\r", stop);
+		_delay_ms(100);
+		printf("%d\n\r", step);
+		
 		
 		
 		//Step 0
@@ -252,10 +288,9 @@ int main(void)
 			waiting_time_process = waiting_time;
 			printf("waiting time: %d\n\r", waiting_time_process);
 			
-			adc_write_pressure();		//Trigger ADC conversion
+			/*adc_write_pressure();		//Trigger ADC conversion
 			_delay_ms(100);
-			volume = adc_to_volume();
-			//printf("level process tank: %d\n\r", volume);
+			volume = adc_to_volume();*/
 			
 			_delay_ms(1000);
 		}
@@ -336,11 +371,13 @@ int main(void)
 			step = 8;
 			printf("Step: %d\n\r", step);
 			
-			for(cooldown_delay = 0; cooldown_delay <= waiting_time_process; cooldown_delay++){
+			for(cd_counter = 0; cd_counter <= waiting_time_process; cd_counter++){
 				_delay_ms(1000);
-				printf("%d\n\r", cooldown_delay);
+				printf("%d\n\r", cd_counter);
+				if(stop == 1)
+				break;
 			}
-			printf("Time Completed\n\r");
+			//printf("Time Completed\n\r");
 		}
 		
 		//Step 9
@@ -359,8 +396,9 @@ int main(void)
 			step = 10;
 			printf("Step: %d\n\r", step);
 			electro_v_state(0);
-			//printf("Process Completed");
+			//printf("Process Completed\n\r");
 			_delay_ms(3000);
+			
 			serve = 0;
 			start = 0;
 			step = 0;	
@@ -484,7 +522,8 @@ void water_p1_start(int max){
 	for(m = 0; m <= max; m++){
 		water_p1 = m;
 		_delay_ms(3);				//Ensures that the loop completes within 4 seconds.
-					
+		if(stop == 1)
+			break;	
 	}
 }
 
@@ -493,6 +532,8 @@ void water_p1_stop(int max){
 	for(s = max; s >= 0; s--){
 		water_p1 = s;
 		_delay_ms(3);				//Ensures that the loop completes within 3 seconds.
+		if(stop == 1)
+			break;
 	}
 	
 }
@@ -502,6 +543,8 @@ void water_p2_start(int max){
 	for(m = 0; m <= max; m++){
 		water_p2 = m;
 		_delay_ms(3);				//Ensures that the loop completes within 4 seconds.
+		if(stop == 1)
+			break;
 		
 	}
 }
@@ -511,6 +554,8 @@ void water_p2_stop(int max){
 	for(s = max; s >= 0; s--){
 		water_p2 = s;
 		_delay_ms(3);				//Ensures that the loop completes within 3 seconds.
+		if(stop == 1)
+			break;
 	}
 	
 }
@@ -589,8 +634,9 @@ void INT_init(void){
 	// Sets up INT0 and INT1 to trigger on falling edge
 	MCUCR |= (1 << ISC01) | (1 << ISC11);
 	MCUCR &= ~(1 << ISC00) & ~(1 << ISC10);
+	EMCUCR |= (1 << ISC2);
 	
-	GICR |= (1 << INT0) | (1 << INT1);	// Enable INT0 and INT1 interrupts
+	GICR |= (1 << INT0) | (1 << INT1) | (1 << INT2);	// Enable INT0 and INT1 interrupts
 	sei();								// Enable global interrupts
 }
 
@@ -616,7 +662,7 @@ int adc_to_volume(void){
 	//real_volume = level * 6;
 	real_volume = (level * 6.24824) - 9.16149;
 	
-	printf("real volume: %d\n\r", real_volume);
+	//printf("real volume: %d\n\r", real_volume);
 	
 	//volumen_segun_tanque = (level * 6.32878) - 2.08289;
 	//printf("volumen segun tanque: %d\n\n\r", volumen_segun_tanque);
@@ -719,4 +765,20 @@ void stop_actuators(void){
 			water_p2 = 0;
 			h_resis = 0;
 			PORTD |= (1 << electro_v);	
+}
+
+void control_panel_init(void){
+	DDRB |= (1 << start_led);
+	DDRB |= (1 << stop_led);
+	DDRB |= (1 << serve_led);
+	
+	DDRD &= ~(1 << start_signal);
+	DDRD &= ~(1 << serve_signal);
+}
+
+ISR(INT2_vect){
+	_delay_ms(100);
+	stop = 1;
+	stop_actuators();
+	start = 0;
 }

@@ -251,11 +251,36 @@ int main(void)
 		_delay_ms(100);
 		printf("%d\n\r", step);
 		
+		//T1 error
 		if(cap_sen_t1_high_val == 0 && cap_sen_t1_low_val == 1){
 			stop_actuators();
 			stop = 1;
 			start = 0;
 			printf("Error t1\n\r");
+		}
+		
+		//T1 is empty
+		if(cap_sen_t1_high_val == 1 && cap_sen_t1_low_val == 1){
+			stop_actuators();
+			stop = 1;
+			start = 0;
+			printf("t1\n\r");
+		}
+		
+		//T2 error
+		if(cap_sen_t2_high_val == 0 && cap_sen_t2_low_val == 1){
+			stop_actuators();
+			stop = 1;
+			start = 0;
+			//printf("t2");
+		}
+		
+		//T2 is empty
+		if(cap_sen_t2_high_val == 1 && cap_sen_t2_low_val == 1){
+			stop_actuators();
+			stop = 1;
+			start = 0;
+			printf("t1\n\r");
 		}
 		
 		

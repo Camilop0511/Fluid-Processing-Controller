@@ -236,12 +236,13 @@ int main(void)
 		start_signal_value = (PIND & (1 << start_signal)) >> start_signal;
 		if (start_signal_value == 1 && wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
 		&& hres_power != 0 && waiting_time != 0){
+			
+			if (step >= 1 && stop == 0){	//For stop indication
+				step = step - 1;
+			}
 			_delay_ms(100);
 			stop = 0;
 			start = 1;
-			
-			if (step >= 1)		//For stop indication
-			step = step - 1;
 		}
 		
 		printf("%d\n\r", start);
@@ -249,6 +250,13 @@ int main(void)
 		printf("%d\n\r", stop);
 		_delay_ms(100);
 		printf("%d\n\r", step);
+		
+		if(cap_sen_t1_high_val == 0 && cap_sen_t1_low_val == 1){
+			stop_actuators();
+			stop = 1;
+			start = 0;
+			printf("Error t1\n\r");
+		}
 		
 		
 		
@@ -761,6 +769,8 @@ ISR(USART_RX_vect){
 }
 
 void stop_actuators(void){
+			stop = 1;
+			start = 0;
 			water_p1 = 0;	
 			water_p2 = 0;
 			h_resis = 0;
@@ -782,3 +792,4 @@ ISR(INT2_vect){
 	stop_actuators();
 	start = 0;
 }
+

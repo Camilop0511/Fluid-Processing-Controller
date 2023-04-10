@@ -27,7 +27,9 @@
         </p>
 
         <button onclick="start_process()">Start Process</button>
+        <button onclick="stop_process()">Stop Process</button>
         <button onclick="serve()">Serve Liquid</button>
+        
     <body>
 
     <script>
@@ -35,6 +37,14 @@
         function start_process() {
             var xhttp = new XMLHttpRequest();   //Creates a XMLHttpRequest object
             xhttp.open("GET", "start.php"); //Sends a request
+            xhttp.send();
+        }   
+    </script>
+    <script>
+    //AJAX application that asynchronously retrieves and displays contents of the gpio.php file
+        function stop_process() {
+            var xhttp = new XMLHttpRequest();   //Creates a XMLHttpRequest object
+            xhttp.open("GET", "stop.php"); //Sends a request
             xhttp.send();
         }   
     </script>

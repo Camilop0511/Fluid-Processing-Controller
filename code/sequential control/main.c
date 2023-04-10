@@ -771,6 +771,11 @@ ISR(USART_RX_vect){
 			
 			//printf("%x\n\r", RxBuffer[1]);
 			start = RxBuffer[1];
+			
+			if (step >= 1 /*&& stop == 0*/){	//For stop indication
+				step = step - 1;
+			}
+			stop = 0;
 			printf("Indication: START %d\n\r", start);
 		}
 		
@@ -778,14 +783,14 @@ ISR(USART_RX_vect){
 			
 			stop = RxBuffer[1];
 			printf("Indication: STOP %d\n\r", stop);
-			//stop_actuators();
+			stop_actuators();
 		}
 		
 		else if (RxBuffer[0] == SERVE){			//
 			
 			serve = RxBuffer[1];
 			//printf("Indication: SERVE %d\n\r", serve);
-			//stop_actuators();	
+				
 		}
 			
 		

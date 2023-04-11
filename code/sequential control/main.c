@@ -143,6 +143,7 @@ int main(void)
 	int cap_sen_pt_high_val;
 	
 	int start_signal_value;
+	int serve_signal_value;
 	
 	while (1)
 	{
@@ -232,18 +233,44 @@ int main(void)
 		
 		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
 		
-		
-		start_signal_value = (PIND & (1 << start_signal)) >> start_signal;
-		if (start_signal_value == 1 && wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
-		&& hres_power != 0 && waiting_time != 0){
+		//Start Push-button
+		start_signal_valu	9++e = (PIND & (1 << start_signal)) >> start_signal;
+		if (start == 0 && start_signal_value == 1 && wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
+		&& hres_power != 0 && waiting_time != 0 /*&& cap_sen_t1_low == 0*/){
 			
-			if (step >= 1 && stop == 0){	//For stop indication
+			PORTB |= (1 << start_led);
+			PORTB &= ~(1 << stop_led);
+			
+			if (step >= 1 /*&& stop == 0*/){	//For stop indication
 				step = step - 1;
 			}
 			_delay_ms(100);
+			printf("h");
 			stop = 0;
 			start = 1;
 		}
+		
+		//Serve Push-button
+		serve_signal_value = (PIND & (1 << serve_signal)) >> serve_signal;
+		if (serve_signal_value == 1 && step == 8){
+			PORTB |= (1 << serve_led);
+			serve = 1;
+		}
+		
+		
+		
+
+		if (start == 0)
+		PORTB &= ~(1 << start_led);
+		
+		/*if (serve == 1)
+		PORTB |= (1 << serve_led);*/
+		if (serve == 0)
+		PORTB &= ~(1 << serve_led);
+		
+		
+		
+		//PORTB &= ~(1 << serve_led);
 		
 		printf("%d\n\r", start);
 		_delay_ms(100);
@@ -254,8 +281,8 @@ int main(void)
 		//T1 error
 		if(cap_sen_t1_high_val == 0 && cap_sen_t1_low_val == 1){
 			stop_actuators();
-			stop = 1;
-			start = 0;
+			/*stop = 1;
+			start = 0;*/
 			printf("Error t1\n\r");
 		}
 		
@@ -416,21 +443,25 @@ int main(void)
 		//Step 9
 		//Liquid Serving
 		if(step == 8 && start == 1 && stop == 0 && serve == 1){
-			
 			step = 9;
+			PORTB |= (1 << serve_led);
 			printf("Step: %d\n\r", step);
 			electro_v_state(1);	
 		}
 		
 		//Step 10
-		//Liquid Serving
+		//Close electro-valve
 		if(step == 9 && start == 1 && stop == 0 && real_volume <= 100){
 			
 			step = 10;
 			printf("Step: %d\n\r", step);
 			electro_v_state(0);
 			//printf("Process Completed\n\r");
-			_delay_ms(3000);
+			//_delay_ms(3000);
+			
+			
+			//PORTB &= ~(1 << start_led);
+			//PORTB &= ~(1 << serve_led);
 			
 			serve = 0;
 			start = 0;
@@ -770,13 +801,21 @@ ISR(USART_RX_vect){
 		else if (RxBuffer[0] == START){			//newline alt+10 alt+1
 			
 			//printf("%x\n\r", RxBuffer[1]);
-			start = RxBuffer[1];
 			
-			if (step >= 1 /*&& stop == 0*/){	//For stop indication
-				step = step - 1;
+			if (wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
+			&& hres_power != 0 && waiting_time != 0){
+				
+				PORTB |= (1 << start_led);
+				PORTB &= ~(1 << stop_led);
+				
+				if (step >= 1 && start == 0){	//For stop indication
+					step = step - 1;
+				}
+				
+				start = RxBuffer[1];
+				stop = 0;
+				//printf("Indication: START %d\n\r", start);
 			}
-			stop = 0;
-			printf("Indication: START %d\n\r", start);
 		}
 		
 		else if (RxBuffer[0] == STOP){			//_
@@ -789,6 +828,7 @@ ISR(USART_RX_vect){
 		else if (RxBuffer[0] == SERVE){			//
 			
 			serve = RxBuffer[1];
+			
 			//printf("Indication: SERVE %d\n\r", serve);
 				
 		}
@@ -799,6 +839,11 @@ ISR(USART_RX_vect){
 }
 
 void stop_actuators(void){
+			
+			PORTB |= (1 << stop_led);
+			PORTB &= ~(1 << start_led);
+			PORTB &= ~(1 << serve_led);
+			
 			stop = 1;
 			start = 0;
 			water_p1 = 0;	

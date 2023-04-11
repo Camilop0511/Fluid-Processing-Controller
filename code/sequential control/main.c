@@ -234,7 +234,7 @@ int main(void)
 		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
 		
 		//Start Push-button
-		start_signal_valu	9++e = (PIND & (1 << start_signal)) >> start_signal;
+		start_signal_value = (PIND & (1 << start_signal)) >> start_signal;
 		if (start == 0 && start_signal_value == 1 && wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
 		&& hres_power != 0 && waiting_time != 0 /*&& cap_sen_t1_low == 0*/){
 			

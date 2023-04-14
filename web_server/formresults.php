@@ -29,11 +29,11 @@
         <button onclick="start_process()">Start Process</button>
         <button onclick="stop_process()">Stop Process</button>
         <button onclick="serve()">Serve Liquid</button>
-        <!--<button onclick="serial_read()">Serial Test</button>
+        <!--<button onclick="serial_read()">Serial Test</button>-->
 
         <p>
-            Test RX value: <?= $test_rx; ?>
-        </p>-->
+            Volume: <?= $real_volume; ?>
+        </p>
     <body>
 
     <script>

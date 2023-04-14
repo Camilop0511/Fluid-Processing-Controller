@@ -1,5 +1,12 @@
 $serialPort = fopen('/dev/ttyS0', 'r');
 system('stty -F /dev/ttyS0 57600');
-$contents = fread($serialPort, 500);
-echo $contents;
+
+while (true) {
+    $byte = fread($serialPort, 1);
+    if ($byte === "\xa3") {
+        // do something when the byte 0xa3 is read
+        echo "Step\n";
+    }
+}
+
 fclose($serialPort);

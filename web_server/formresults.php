@@ -185,12 +185,8 @@
     $e2_received = false;
     $f6_received = false;
     $n9a_received = false;
-
-    session_start();
-    $_SESSION['test_rx'] = $test_rx;
-
     
-    while (true) {
+    //while (true) {
         $byte = fread($serialPort, 1);
     
         switch ($byte) {
@@ -291,7 +287,7 @@
                 }
             break;
         }
-    }
+   // }
     fclose($serialPort);
 ?> 
 

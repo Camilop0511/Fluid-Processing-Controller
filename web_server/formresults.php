@@ -63,17 +63,10 @@
     <script>
     //AJAX application that asynchronously retrieves and displays contents of the gpio.php file
     function serial_read() {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-             document.getElementById("test-rx").innerHTML = this.responseText;
-            }
-            else if (this.readyState == 4 && this.status != 200) {
-            document.getElementById("test-rx").innerHTML = "Error reading data.";
-            }
-        };
-        xhttp.open("GET", "serial_read.php", true);
-        xhttp.send();
+    
+        session_start();
+        $test_rx = isset($_SESSION['test_rx']) ? $_SESSION['test_rx'] : null;
+
     } 
     </script>
 </html>

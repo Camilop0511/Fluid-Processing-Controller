@@ -11,6 +11,7 @@
     $n9a_received = false;
 
     $test_rx = 33;
+    echo $test_rx;
     
     while (true) {
         $byte = fread($serialPort, 1);

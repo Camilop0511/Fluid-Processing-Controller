@@ -34,7 +34,8 @@ while (true) {
             } elseif ($c5_received) {
                 $level_pt = ord($byte);
                 $real_volume = ($level_pt * 6.24824) - 9.16149;
-                echo "Real Volume: " . $real_volume . "\n";
+                echo "Level (pt): " . $level_pt . "\n";
+                echo "Real Volume: " . intval($real_volume) . "\n";
                 $c5_received = false;
             }
             break;

@@ -2,13 +2,40 @@ $serialPort = fopen('/dev/ttyS0', 'r');
 system('stty -F /dev/ttyS0 57600');
 
 $a3_received = false;
+$b4_received = false;
+$c5_received = false;
+
 while (true) {
     $byte = fread($serialPort, 1);
-    if ($byte === "\xa3") {
-        $a3_received = true;
-    } elseif ($a3_received) {
-        echo "Step: " . ord($byte) . "\n";
-        $a3_received = false;
+
+    switch ($byte) {
+        case "\xa3":
+            $a3_received = true;
+            $b4_received = false;
+            $c5_received = false;
+            break;
+        case "\xb4":
+            $a3_received = false;
+            $b4_received = true;
+            $c5_received = false;
+            break;
+        case "\xc5":
+            $a3_received = false;
+            $b4_received = false;
+            $c5_received = true;
+            break;
+        default:
+            if ($a3_received) {
+                echo "Step: " . ord($byte) . "\n";
+                $a3_received = false;
+            } elseif ($b4_received) {
+                echo "Temperature: " . ord($byte) . "\n";
+                $b4_received = false;
+            } elseif ($c5_received) {
+                echo "Real Volume: " . ord($byte) . "\n";
+                $c5_received = false;
+            }
+            break;
     }
 }
 

@@ -1,11 +1,14 @@
 $serialPort = fopen('/dev/ttyS0', 'r');
 system('stty -F /dev/ttyS0 57600');
 
+$a3_received = false;
 while (true) {
-    $byte1 = fread($serialPort, 1);
-    $byte2 = fread($serialPort, 1);
-    if ($byte1 === "\xa3") {
-        echo "Step: " . ord($byte2) . "\n";
+    $byte = fread($serialPort, 1);
+    if ($byte === "\xa3") {
+        $a3_received = true;
+    } elseif ($a3_received) {
+        echo "Step: " . ord($byte) . "\n";
+        $a3_received = false;
     }
 }
 

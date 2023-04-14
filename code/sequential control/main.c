@@ -24,6 +24,7 @@
 #define cap_sen_t2_high PC2
 #define cap_sen_pt_high PC1
 
+//Receive Commands
 #define com0 0x5B	//Water pump 1 speed percentage 
 #define com1 0x4A	//Liquid level tank 1
 #define com3 0x3D	//Water pump 2 speed percentage
@@ -33,6 +34,16 @@
 #define START 0x0A	//Start Indication 
 #define STOP 0x5F	//Stop Indication
 #define SERVE 0x1B	//Serve Indication 
+
+
+//Transmit Commands
+#define STEP 0xA3
+#define TEMPERATURE 0xB4
+#define VOLUME 0xC5
+#define START_STATE 0xD1
+#define STOP_STATE 0xE2
+#define SERVE_STATE 0xF6
+#define SERVE_COUNT_STATE 0x9A
 
 //Defines for control panel
 #define start_led PB2
@@ -84,6 +95,7 @@ int wp1_speed;
 int wp2_speed;
 int level_t1;
 int level_t2;
+int level_pt;
 int real_temperature;
 int user_temperature;
 int hres_power;
@@ -111,6 +123,7 @@ int main(void)
 	uint16_t percentage = 0;
 	//char temperature;
 	int volume;
+	float volume_tx;
 	
 	//Initialize PWM and USART communication
 	cli();
@@ -221,14 +234,23 @@ int main(void)
 		adc_write_pressure();		//Trigger ADC conversion
 		volume = adc_to_volume();
 		printf("Real volume: %d\n\r", volume);
+		_delay_ms(100);
+
+		//printf("level_pt: %d\n\r", level_pt);
+		uart_tx(VOLUME);
+		uart_tx(level_pt);
 		_delay_ms(10);
 		
 		
 		adc_write_temperature();
 		//printf("value in variable: %d\n\r",adc_data_temperature);
 		real_temperature = adc_to_temperature();
-		_delay_ms(10);
+		
 		printf("temperature: %d\n\r", real_temperature);
+		_delay_ms(100);
+		uart_tx(TEMPERATURE);
+		uart_tx(real_temperature);
+		_delay_ms(10);
 		
 		
 		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
@@ -274,9 +296,24 @@ int main(void)
 		
 		printf("%d\n\r", start);
 		_delay_ms(100);
+		
+		uart_tx(START_STATE);
+		uart_tx(start);
+		_delay_ms(10);
+		
 		printf("%d\n\r", stop);
 		_delay_ms(100);
-		printf("%d\n\r", step);
+		
+		uart_tx(STOP_STATE);
+		uart_tx(stop);
+		_delay_ms(10);
+	
+		//printf("%d\n\r", step);
+		
+		uart_tx(SERVE_STATE);
+		uart_tx(serve);
+		_delay_ms(10);
+		
 		
 		//T1 error
 		if(cap_sen_t1_high_val == 0 && cap_sen_t1_low_val == 1){
@@ -316,7 +353,13 @@ int main(void)
 		//Waits for serial values from Raspberry Pi
 		if(step == 0){
 			printf("Step: %d\n\r", step);
-				_delay_ms(1000);
+			_delay_ms(100);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
+				
 			}
 
 		//Step1
@@ -325,6 +368,11 @@ int main(void)
 			
 			step = 1;
 			printf("Step: %d\n\r", step);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
 			
 			//Transfer communication variables to process variables
 			wp1_speed_process = wp1_speed;
@@ -352,7 +400,7 @@ int main(void)
 			_delay_ms(100);
 			volume = adc_to_volume();*/
 			
-			_delay_ms(1000);
+			
 		}
 		
 		//Step 2
@@ -361,7 +409,12 @@ int main(void)
 			
 			step = 2;
 			printf("Step: %d\n\r", step);
-			_delay_ms(1000);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
 			//printf("percentage value: %d\n\r", percentage);
 			water_p1_start(percentage);	
@@ -373,7 +426,13 @@ int main(void)
 			
 			step = 3;
 			printf("Step: %d\n\r", step);
-			_delay_ms(1000);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
+			
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
 			//printf("percentage value: %d\n\r", percentage);
 			water_p1_stop(percentage);
@@ -382,10 +441,16 @@ int main(void)
 		//Step 4
 		//Starts Water Pump 2
 		if(step == 3 && start == 1 && stop == 0 && cap_sen_t2_low_val == 0 && real_volume >= volume_product_1){
-			
+				
 			step = 4;
 			printf("Step: %d\n\r", step);
-			_delay_ms(1000);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
+			
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
 			//printf("percentage value: %d\n\r", percentage);
 			water_p2_start(percentage);	
@@ -397,7 +462,12 @@ int main(void)
 			
 			step = 5;
 			printf("Step: %d\n\r", step);
-			_delay_ms(1000);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
 			//printf("percentage value: %d\n\r", percentage);
 			water_p2_stop(percentage);	
@@ -409,7 +479,12 @@ int main(void)
 			
 			step = 6;
 			printf("Step: %d\n\r", step);
-			_delay_ms(1000);
+			_delay_ms(100);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
 			percentage = numeric_to_percentage_h_res(hres_process);
 			h_resis = percentage;
 		}
@@ -420,7 +495,12 @@ int main(void)
 			
 			step = 7;
 			printf("Step: %d\n\r", step);
-			_delay_ms(1000);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
 			h_resis = 0;
 		}
 		
@@ -430,10 +510,21 @@ int main(void)
 			
 			step = 8;
 			printf("Step: %d\n\r", step);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
 			
 			for(cd_counter = 0; cd_counter <= waiting_time_process; cd_counter++){
 				_delay_ms(1000);
 				printf("%d\n\r", cd_counter);
+				
+				uart_tx(SERVE_COUNT_STATE);
+				uart_tx(cd_counter);
+				_delay_ms(10);
+				
+				
 				if(stop == 1)
 				break;
 			}
@@ -446,6 +537,12 @@ int main(void)
 			step = 9;
 			PORTB |= (1 << serve_led);
 			printf("Step: %d\n\r", step);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
 			electro_v_state(1);	
 		}
 		
@@ -455,6 +552,12 @@ int main(void)
 			
 			step = 10;
 			printf("Step: %d\n\r", step);
+			_delay_ms(500);
+			
+			uart_tx(STEP);
+			uart_tx(step);
+			_delay_ms(10);
+			
 			electro_v_state(0);
 			//printf("Process Completed\n\r");
 			//_delay_ms(3000);
@@ -711,7 +814,6 @@ int adc_to_temperature(void){
 }
 
 int adc_to_volume(void){
-	int level;
 	float adc_value;
 	
 	adc_value = ((float)adc_data_pressure * 0.0196078)  ;							//Converts back to range of voltage 0-5V
@@ -719,12 +821,12 @@ int adc_to_volume(void){
 	//printf("adc_value como int: %d\n\r", *(int *)&adc_value);
 	
 	
-	level = (adc_value - 1) * 78.6;													//liquid level in millimeters 
-	printf("level in mm: %d\n\r", level);
+	level_pt = (adc_value - 1) * 78.6;													//liquid level in millimeters 
+	printf("level in mm: %d\n\r", level_pt);
 	
 	//real_volume = level * 6.25;
 	//real_volume = level * 6;
-	real_volume = (level * 6.24824) - 9.16149;
+	real_volume = (level_pt * 6.24824) - 9.16149;
 	
 	//printf("real volume: %d\n\r", real_volume);
 	

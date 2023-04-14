@@ -68,6 +68,9 @@
             if (this.readyState == 4 && this.status == 200) {
              document.getElementById("test-rx").innerHTML = this.responseText;
             }
+            else if (this.readyState == 4 && this.status != 200) {
+            document.getElementById("test-rx").innerHTML = "Error reading data.";
+            }
         };
         xhttp.open("GET", "serial_read.php", true);
         xhttp.send();

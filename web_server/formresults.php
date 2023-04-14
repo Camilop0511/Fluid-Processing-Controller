@@ -160,4 +160,6 @@
    usleep(5000);*/
 
    fclose($serialPort);
+
+   echo "HELLO, WORLD!";
 ?>

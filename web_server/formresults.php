@@ -29,7 +29,11 @@
         <button onclick="start_process()">Start Process</button>
         <button onclick="stop_process()">Stop Process</button>
         <button onclick="serve()">Serve Liquid</button>
-        
+        <button onclick="serial_read()">Serial Test</button>
+
+        <p>
+            Test RX: <span id="test-rx"></span>
+        </p>
     <body>
 
     <script>
@@ -58,14 +62,17 @@
     </script>
     <script>
     //AJAX application that asynchronously retrieves and displays contents of the gpio.php file
-        function serial_read() {
-            var xhttp = new XMLHttpRequest();   //Creates a XMLHttpRequest object
-            xhttp.open("GET", "serial_read.php"); //Sends a request
-            xhttp.send();
-        }   
+    function serial_read() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+             document.getElementById("test-rx").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "serial_read.php", true);
+        xhttp.send();
+    } 
     </script>
-
-
 </html>
 
 <?php

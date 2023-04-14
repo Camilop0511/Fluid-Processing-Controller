@@ -264,7 +264,7 @@
                     $a3_received = false;
                 } elseif ($b4_received) {
                     //echo "Temperature: " . ord($byte) . "\n";
-                    $temperature_rx: ord($byte); 
+                    $temperature_rx = ord($byte); 
                     $b4_received = false;
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);

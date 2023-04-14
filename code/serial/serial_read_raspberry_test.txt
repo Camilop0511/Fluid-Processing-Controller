@@ -2,10 +2,10 @@ $serialPort = fopen('/dev/ttyS0', 'r');
 system('stty -F /dev/ttyS0 57600');
 
 while (true) {
-    $byte = fread($serialPort, 1);
-    if ($byte === "\xa3") {
-        // do something when the byte 0xa3 is read
-        echo "Step\n";
+    $byte1 = fread($serialPort, 1);
+    $byte2 = fread($serialPort, 1);
+    if ($byte1 === "\xa3") {
+        echo "Step: " . ord($byte2) . "\n";
     }
 }
 

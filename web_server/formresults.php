@@ -32,7 +32,7 @@
         <button onclick="serial_read()">Serial Test</button>
 
         <p>
-            Test RX: <span id="test-rx"></span>
+            Test RX value: <?= $test_rx; ?>
         </p>
     <body>
 

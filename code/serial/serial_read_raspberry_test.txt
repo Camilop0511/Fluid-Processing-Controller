@@ -32,7 +32,9 @@ while (true) {
                 echo "Temperature: " . ord($byte) . "\n";
                 $b4_received = false;
             } elseif ($c5_received) {
-                echo "Real Volume: " . ord($byte) . "\n";
+                $level_pt = ord($byte);
+                $real_volume = ($level_pt * 6.24824) - 9.16149;
+                echo "Real Volume: " . $real_volume . "\n";
                 $c5_received = false;
             }
             break;

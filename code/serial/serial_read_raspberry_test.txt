@@ -1,0 +1,5 @@
+$serialPort = fopen('/dev/ttyS0', 'r');
+system('stty -F /dev/ttyS0 57600');
+$contents = fread($serialPort, 500);
+echo $contents;
+fclose($serialPort);

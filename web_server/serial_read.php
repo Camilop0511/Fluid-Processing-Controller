@@ -10,7 +10,7 @@
     $f6_received = false;
     $n9a_received = false;
     
-    while (true) {
+   // while (true) {
         $byte = fread($serialPort, 1);
     
         switch ($byte) {
@@ -111,7 +111,7 @@
                 }
             break;
         }
-    }
+    //}
     fclose($serialPort);
 
     // return variables as JSON

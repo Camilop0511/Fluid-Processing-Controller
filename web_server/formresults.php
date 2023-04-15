@@ -35,10 +35,6 @@
         <button onclick="stop_process()">Stop Process</button>
         <button onclick="serve()">Serve Liquid</button>
         <!--<button onclick="serial_read()">Serial Test</button>-->
-
-       <!-- <p>
-            Volume: <?= $real_volume; ?>
-        </p>-->
     <body>
 
     <script>
@@ -66,22 +62,26 @@
         }   
     </script>
     <script>
-        $(document).ready(function() {
-            setInterval(function() {
-                // make an AJAX request to fetch the values from serial_read.php
-                $.getJSON('serial_read.php', function(data) {
-                    // update the values in the HTML elements
-                    $('#real_volume').text(data.real_volume);
-                    /*$('#tank2').text(data.tank2);
-                    $('#water_p1').text(data.water_p1);
-                    $('#water_p2').text(data.water_p2);
-                    $('#temp').text(data.temp);
-                    $('#hres').text(data.hres);
-                    $('#sec').text(data.sec);*/
-                });
-            }, 5000); // fetch the data every 5 seconds
-        });
-    </script>
+    $(document).ready(function() {
+        setInterval(function() {
+            // make an AJAX request to fetch the values from serial_read.php
+            $.getJSON('serial_read.php', function(data) {
+                // update the values in the HTML elements
+                $('#real_volume').text(data.real_volume);
+                /*$('#tank2').text(data.tank2);
+                $('#water_p1').text(data.water_p1);
+                $('#water_p2').text(data.water_p2);
+                $('#temp').text(data.temp);
+                $('#hres').text(data.hres);
+                $('#sec').text(data.sec);*/
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                // display an error message
+                console.log('Error fetching data: ' + textStatus + ', ' + errorThrown);
+            });
+        }, 5000); // fetch the data every 5 seconds
+    });
+</script>
+
 
 </html>
 

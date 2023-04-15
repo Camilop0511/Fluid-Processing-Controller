@@ -79,7 +79,7 @@
                 break;
             default:
                 if ($a3_received) {
-                    //echo "Step: " . ord($byte) . "\n";
+                    echo "Step: " . ord($byte) . "\n";
                     $step_rx = ord($byte);
                     $a3_received = false;
                 } elseif ($b4_received) {

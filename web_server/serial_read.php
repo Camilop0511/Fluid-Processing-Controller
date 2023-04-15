@@ -2,7 +2,7 @@
     $serialPort = fopen('/dev/ttyS0', 'r');
     system('stty -F /dev/ttyS0 57600');
     
-    $step_rx = 33;
+    $real_volume = 22;
 
     $a3_received = false;
     $b4_received = false;

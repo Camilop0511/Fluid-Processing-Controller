@@ -12,7 +12,7 @@
     
    // while (true) {
         $byte = fread($serialPort, 1);
-       // echo "Received byte: " . bin2hex($byte) . "\n";
+       echo "Received byte: " . bin2hex($byte) . "\n";
 
     
         switch ($byte) {
@@ -81,8 +81,7 @@
                 break;
             default:
                 if ($a3_received) {
-                    //echo "Step: " . ord($byte) . "\n";
-                    echo "Step: " . bin2hex($byte) . "\n";
+                    echo "Step: " . ord($byte) . "\n";
                     $step_rx = ord($byte);
                     $a3_received = false;
                 } elseif ($b4_received) {

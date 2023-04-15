@@ -9,9 +9,6 @@
     $e2_received = false;
     $f6_received = false;
     $n9a_received = false;
-
-    $test_rx = 33;
-    echo $test_rx;
     
     while (true) {
         $byte = fread($serialPort, 1);
@@ -116,4 +113,15 @@
         }
     }
     fclose($serialPort);
-?>
+
+    // return variables as JSON
+    echo json_encode(array(
+        "step_rx" => $step_rx,
+        "temperature_rx" => $temperature_rx,
+        "real_volume" => $real_volume,
+        "start_state" => $start_state,
+        "stop_state" => $stop_state,
+        "serve_state" => $serve_state,
+        "serve_count" => $serve_count
+    ));
+?> 

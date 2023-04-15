@@ -100,7 +100,7 @@
                     $d1_received = false;
                 } elseif ($e2_received) {
                     $stop_state = ord($byte);
-                    //echo "Stop State: " . $stop_state . "\n";
+                    echo "Stop State: " . $stop_state . "\n";
                     $e2_received = false;
                 } elseif ($f6_received) {
                     $serve_state = ord($byte);

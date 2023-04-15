@@ -2,7 +2,7 @@
     $serialPort = fopen('/dev/ttyS0', 'r');
     system('stty -F /dev/ttyS0 57600');
     
-    $real_volume = 22;
+    //$real_volume = 22;
 
     $a3_received = false;
     $b4_received = false;
@@ -14,7 +14,7 @@
     
    // while (true) {
         $byte = fread($serialPort, 1);
-       echo "Received byte: " . bin2hex($byte) . "\n";
+       //echo "Received byte: " . bin2hex($byte) . "\n";
 
     
         switch ($byte) {
@@ -93,12 +93,12 @@
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);
                     $real_volume = ($level_pt * 6.24824) - 9.16149;
-                    //echo "Level (pt): " . $level_pt . "\n";
-                    //echo "Real Volume: " . intval($real_volume) . "\n";
+                    echo "Level (pt): " . $level_pt . "\n";
+                    echo "Real Volume: " . intval($real_volume) . "\n";
                     $c5_received = false;
                 } elseif ($d1_received) {
                     $start_state = ord($byte);
-                   // echo "Start State: " . $start_state . "\n";
+                    echo "Start State: " . $start_state . "\n";
                     $d1_received = false;
                 } elseif ($e2_received) {
                     $stop_state = ord($byte);
@@ -106,11 +106,11 @@
                     $e2_received = false;
                 } elseif ($f6_received) {
                     $serve_state = ord($byte);
-                    //echo "Serve State: " . $serve_state . "\n\n";
+                    echo "Serve State: " . $serve_state . "\n\n";
                     $f6_received = false;
                 } elseif ($n9a_received) {
                     $serve_count = ord($byte);
-                    //echo "Serve Count: " . $serve_count . "\n";
+                    echo "Serve Count: " . $serve_count . "\n";
                     $n9a_received = false;
                 }
             break;

@@ -12,6 +12,8 @@
     
    // while (true) {
         $byte = fread($serialPort, 1);
+        echo "Received byte: " . bin2hex($byte) . "\n";
+
     
         switch ($byte) {
             case "\xa3":

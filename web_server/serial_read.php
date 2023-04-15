@@ -130,5 +130,5 @@
         "serve_count" => $serve_count
     );
 
-    echo json_encode($variables);
+   //echo json_encode($variables);
 ?> 

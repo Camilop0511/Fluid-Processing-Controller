@@ -27,7 +27,7 @@
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
         <p>
-             Real Volume: <span id="real_volume"></span> 
+        <div id="real_volume"><?php echo $real_volume; ?></div>
         </p>
 
 

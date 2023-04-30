@@ -7,6 +7,9 @@
 	$json_array = array();
 
 
+	$data[] = array(
+		"temperature_rx" => 150);
+
 
     $a3_received = false;
     $b4_received = false;
@@ -100,8 +103,8 @@
                     $temperature_rx = ord($byte); 
                     $b4_received = false;
 					
-					$data[] = array(
-						"temperature_rx" => 150);
+					/*$data[] = array(
+						"temperature_rx" => $temperature_rx);*/
 					
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);

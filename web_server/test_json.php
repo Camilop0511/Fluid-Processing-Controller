@@ -2,7 +2,7 @@
 <html>
 <head>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<!--<script>
+	<script>
 		$(document).ready(function() {
 			setInterval(function() {
 				// make an AJAX request to fetch the values from serial_read.php
@@ -12,7 +12,7 @@
 				});
 			}, 20000); // fetch the data every 5 seconds
 		});
-	</script>-->
+	</script>
 </head>
 <body>
 	<p>The real volume is: <span id="real-volume"></span></p>

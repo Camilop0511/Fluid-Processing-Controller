@@ -10,7 +10,7 @@
 					// update the HTML content with the real_volume value
 					$("#real-volume").html(data.real_volume);
 				});
-			}, 5000); // fetch the data every 5 seconds
+			}, 20000); // fetch the data every 5 seconds
 		});
 	</script>
 </head>

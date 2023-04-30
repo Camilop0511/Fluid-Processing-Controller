@@ -96,17 +96,10 @@
                     echo "Step: " . ord($byte) . "\n";
                     $step_rx = ord($byte);
                     $a3_received = false;
-					
-					$data[] = array(
-						"step" => $step_rx);
                 } elseif ($b4_received) {
                     echo "Temperature: " . ord($byte) . "\n";
                     $temperature_rx = ord($byte); 
                     $b4_received = false;
-					
-					/*$data[] = array(
-						"temperature_rx" => $temperature_rx);*/
-					
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);
                     $real_volume = ($level_pt * 6.24824) - 9.16149;
@@ -136,14 +129,44 @@
     fclose($serialPort);
 
 
-array_push($json_array, $data);
+// Check if $temperature_rx has a value and add it to the array
+if (isset($temperature_rx)) {
+    $data[] = array(
+        "temperature_rx" => $temperature_rx);
+}
 
-// Check if $step_rx has a value and add it to the array
-//if (isset($step_rx)) {
- //   $json_array['step'] = $step_rx;
-//}
+// Check if $real_volume has a value and add it to the array
+if (isset($real_volume)) {
+    $data[] = array(
+        "real_volume" => $real_volume);
+}
+
+// Check if $start_state has a value and add it to the array
+if (isset($start_state)) {
+    $data[] = array(
+        "start_state" => $start_state);
+}
+
+// Check if $stop_state has a value and add it to the array
+if (isset($stop_state)) {
+    $data[] = array(
+        "stop_state" => $stop_state);
+}
+
+// Check if $serve_state has a value and add it to the array
+if (isset($serve_state)) {
+    $data[] = array(
+        "serve_state" => $serve_state);
+}
+
+// Check if $serve_count has a value and add it to the array
+if (isset($serve_count)) {
+    $data[] = array(
+        "serve_count" => $serve_count);
+}
 
 // Encode the array as a JSON string and echo it
-echo json_encode($json_array);
+echo json_encode($data);
+
 
 ?> 

@@ -69,18 +69,13 @@
             setInterval(function() {
                 // make an AJAX request to fetch the values from serial_read.php
                 $.getJSON('serial_read.php', function(data) {
-					console.log(data);
-                    // update the values in the HTML elements
-					$('#step_rx').text(data.step_rx);
-					$('#temperature_rx').text(data.temperature_rx);
-                    //$('#real_volume').text(data.real_volume);
-                    /*$('#tank2').text(data.tank2);
-                    $('#water_p1').text(data.water_p1);
-                    $('#water_p2').text(data.water_p2);
-                    $('#temp').text(data.temp);
-                    $('#hres').text(data.hres);
-                    $('#sec').text(data.sec);*/
-                });
+				console.log(data);
+				// update the values in the HTML elements
+				$('#step_rx').text(data.step_rx);
+				$('#temperature_rx').text(data.temperature_rx);
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.error(textStatus, errorThrown);
+			});
             }, 1000); // fetch the data every 1 second
         });
     </script>

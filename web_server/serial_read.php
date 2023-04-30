@@ -128,7 +128,7 @@
     fclose($serialPort);
 
 
-
+array_push($json_array, $data);
 
 // Check if $step_rx has a value and add it to the array
 //if (isset($step_rx)) {

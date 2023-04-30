@@ -69,6 +69,7 @@
             setInterval(function() {
                 // make an AJAX request to fetch the values from serial_read.php
                 $.getJSON('serial_read.php', function(data) {
+					console.log(data);
                     // update the values in the HTML elements
 					$('#step_rx').text(data.step_rx);
 					$('#temperature_rx').text(data.temperature_rx);

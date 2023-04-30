@@ -27,7 +27,7 @@
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
         <p>
-             Real Volume: <span id="real_volume"></span> 
+             Step: <span id="step_rx"></span> 
         </p>
 
 
@@ -61,13 +61,14 @@
             xhttp.send();
         }   
     </script>
-    <!--<script>
+    <script>
         $(document).ready(function() {
             setInterval(function() {
                 // make an AJAX request to fetch the values from serial_read.php
                 $.getJSON('serial_read.php', function(data) {
                     // update the values in the HTML elements
-                    $('#real_volume').text(data.real_volume);
+					$('#step_rx').text(data.step_rx);
+                    //$('#real_volume').text(data.real_volume);
                     /*$('#tank2').text(data.tank2);
                     $('#water_p1').text(data.water_p1);
                     $('#water_p2').text(data.water_p2);
@@ -77,7 +78,7 @@
                 });
             }, 5000); // fetch the data every 5 seconds
         });
-    </script>-->
+    </script>
 
 </html>
 

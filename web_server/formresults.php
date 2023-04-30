@@ -73,7 +73,7 @@
 				// update the values in the HTML elements
 				$('#step_rx').text(data.step_rx);
 				$('#temperature_rx').text(data.temperature_rx);
-				console.log(data.temperature_rx); // log the value of 'temperature_rx'
+				console.log("temperature_rx:", data.temperature_rx);
 			})/*.fail(function(jqXHR, textStatus, errorThrown) {
 				console.error(textStatus, errorThrown);
 			});*/

@@ -234,26 +234,26 @@ int main(void)
 		adc_write_pressure();		//Trigger ADC conversion
 		volume = adc_to_volume();
 		printf("Real volume: %d\n\r", volume);
-		_delay_ms(100);
+		_delay_ms(250);
 
-		//printf("level_pt: %d\n\r", level_pt);
-		uart_tx(VOLUME);
-		uart_tx(level_pt);
+		////printf("level_pt: %d\n\r", level_pt);
+		//uart_tx(VOLUME);
+		//uart_tx(level_pt);
 		_delay_ms(10);
 		
 		
 		adc_write_temperature();
-		//printf("value in variable: %d\n\r",adc_data_temperature);
+		////printf("value in variable: %d\n\r",adc_data_temperature);
 		real_temperature = adc_to_temperature();
 		
 		printf("temperature: %d\n\r", real_temperature);
-		_delay_ms(100);
-		uart_tx(TEMPERATURE);
-		uart_tx(real_temperature);
+		_delay_ms(250);
+		//uart_tx(TEMPERATURE);
+		//uart_tx(real_temperature);
 		_delay_ms(10);
 		
 		
-		//printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
+		////printf("cap t2 high: %d\n\r", cap_sen_pt_high_val);
 		
 		//Start Push-button
 		start_signal_value = (PIND & (1 << start_signal)) >> start_signal;
@@ -263,11 +263,12 @@ int main(void)
 			PORTB |= (1 << start_led);
 			PORTB &= ~(1 << stop_led);
 			
-			if (step >= 1 /*&& stop == 0*/){	//For stop indication
+			if (step >= 1 && cap_sen_t1_low_val == 0 && cap_sen_t1_high_val == 0 && cap_sen_t2_low_val == 0 && cap_sen_t2_high_val == 0
+				&& cap_sen_pt_high_val == 1/*&& stop == 0*/){	//For stop indication
 				step = step - 1;
 			}
 			_delay_ms(100);
-			printf("h");
+			//printf("h");
 			stop = 0;
 			start = 1;
 		}
@@ -294,33 +295,33 @@ int main(void)
 		
 		//PORTB &= ~(1 << serve_led);
 		
-		printf("%d\n\r", start);
+		printf("Start state: %d\n\r", start);
 		_delay_ms(100);
 		
-		uart_tx(START_STATE);
-		uart_tx(start);
+		//uart_tx(START_STATE);
+		//uart_tx(start);
 		_delay_ms(10);
 		
-		printf("%d\n\r", stop);
+		printf("Stop state: %d\n\n\r", stop);
 		_delay_ms(100);
 		
-		uart_tx(STOP_STATE);
-		uart_tx(stop);
+		//uart_tx(STOP_STATE);
+		//uart_tx(stop);
 		_delay_ms(10);
 	
-		//printf("%d\n\r", step);
+		////printf("%d\n\r", step);
 		
-		uart_tx(SERVE_STATE);
-		uart_tx(serve);
+		//uart_tx(SERVE_STATE);
+		//uart_tx(serve);
 		_delay_ms(10);
 		
 		
-		//T1 error
+		//T1 Error
 		if(cap_sen_t1_high_val == 0 && cap_sen_t1_low_val == 1){
 			stop_actuators();
 			/*stop = 1;
 			start = 0;*/
-			printf("Error t1\n\r");
+			printf("Error T1\n\r");
 		}
 		
 		//T1 is empty
@@ -328,7 +329,7 @@ int main(void)
 			stop_actuators();
 			stop = 1;
 			start = 0;
-			printf("t1\n\r");
+			printf("T1 Empty\n\r");
 		}
 		
 		//T2 error
@@ -336,7 +337,7 @@ int main(void)
 			stop_actuators();
 			stop = 1;
 			start = 0;
-			//printf("t2");
+			printf("Error T2\n\r");
 		}
 		
 		//T2 is empty
@@ -344,10 +345,18 @@ int main(void)
 			stop_actuators();
 			stop = 1;
 			start = 0;
-			printf("t1\n\r");
+			printf("T2 Empty\n\r");
 		}
 		
 		
+		//Processing Tank Overflow
+		if(cap_sen_pt_high_val == 0){
+			stop_actuators();
+			stop = 1;
+			start = 0;
+			printf("Processing Tank Overflow\n\r");
+		}
+			
 		
 		//Step 0
 		//Waits for serial values from Raspberry Pi
@@ -355,8 +364,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(100);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 				
@@ -370,8 +379,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			//Transfer communication variables to process variables
@@ -382,10 +391,10 @@ int main(void)
 			printf("WP2 speed: %d\n\r", wp2_speed_process);
 			
 			volume_product_1 = level_t1 * 13;
-			printf("volume product 1: %d\n\r", volume_product_1);
+			//printf("volume product 1: %d\n\r", volume_product_1);
 			
 			volume_product_2 = level_t2 * 13;
-			printf("volume product 2: %d\n\r", volume_product_2);
+			//printf("volume product 2: %d\n\r", volume_product_2);
 			
 			temperature_process = user_temperature;
 			printf("temperature: %d\n\r", temperature_process);
@@ -411,12 +420,12 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
-			//printf("percentage value: %d\n\r", percentage);
+			////printf("percentage value: %d\n\r", percentage);
 			water_p1_start(percentage);	
 		}
 		
@@ -428,13 +437,13 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
-			//printf("percentage value: %d\n\r", percentage);
+			////printf("percentage value: %d\n\r", percentage);
 			water_p1_stop(percentage);
 		}
 		
@@ -446,13 +455,13 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
-			//printf("percentage value: %d\n\r", percentage);
+			////printf("percentage value: %d\n\r", percentage);
 			water_p2_start(percentage);	
 		}
 		
@@ -464,12 +473,12 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			////uart_tx(STEP);
+			////uart_tx(step);
 			_delay_ms(10);
 			
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
-			//printf("percentage value: %d\n\r", percentage);
+			////printf("percentage value: %d\n\r", percentage);
 			water_p2_stop(percentage);	
 		}
 		
@@ -481,8 +490,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(100);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			percentage = numeric_to_percentage_h_res(hres_process);
@@ -497,8 +506,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			h_resis = 0;
@@ -512,23 +521,23 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			for(cd_counter = 0; cd_counter <= waiting_time_process; cd_counter++){
 				_delay_ms(1000);
 				printf("%d\n\r", cd_counter);
 				
-				uart_tx(SERVE_COUNT_STATE);
-				uart_tx(cd_counter);
+				//uart_tx(SERVE_COUNT_STATE);
+				//uart_tx(cd_counter);
 				_delay_ms(10);
 				
 				
 				if(stop == 1)
 				break;
 			}
-			//printf("Time Completed\n\r");
+			////printf("Time Completed\n\r");
 		}
 		
 		//Step 9
@@ -539,8 +548,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			electro_v_state(1);	
@@ -554,12 +563,12 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			uart_tx(STEP);
-			uart_tx(step);
+			//uart_tx(STEP);
+			//uart_tx(step);
 			_delay_ms(10);
 			
 			electro_v_state(0);
-			//printf("Process Completed\n\r");
+			////printf("Process Completed\n\r");
 			//_delay_ms(3000);
 			
 			
@@ -581,7 +590,7 @@ int main(void)
 	char message[] = "Hello, World\n\r";
 	int i;
 	for (i = 0; i < sizeof(message) - 1; i++) {
-		uart_tx(message[i]);
+		//uart_tx(message[i]);
 	}
 }*/
 
@@ -674,7 +683,7 @@ int ascii_input(void){
 	
 	do{
 		input[length] = uart_rx();
-		uart_tx(input[length]);
+		//uart_tx(input[length]);
 		length++;
 	} while ((length < 4) && (input[length-1] != '\r'));
 	
@@ -817,22 +826,22 @@ int adc_to_volume(void){
 	float adc_value;
 	
 	adc_value = ((float)adc_data_pressure * 0.0196078)  ;							//Converts back to range of voltage 0-5V
-	//printf("adc_value: %2.2f\n\r", adc_value);
-	//printf("adc_value como int: %d\n\r", *(int *)&adc_value);
+	////printf("adc_value: %2.2f\n\r", adc_value);
+	////printf("adc_value como int: %d\n\r", *(int *)&adc_value);
 	
 	
 	level_pt = (adc_value - 1) * 78.6;													//liquid level in millimeters 
-	printf("level in mm: %d\n\r", level_pt);
+	//printf("level in mm: %d\n\r", level_pt);
 	
 	//real_volume = level * 6.25;
 	//real_volume = level * 6;
 	real_volume = (level_pt * 6.24824) - 9.16149;
 	
-	//printf("real volume: %d\n\r", real_volume);
+	////printf("real volume: %d\n\r", real_volume);
 	
 	//volumen_segun_tanque = (level * 6.32878) - 2.08289;
-	//printf("volumen segun tanque: %d\n\n\r", volumen_segun_tanque);
-	//printf("vst: %d\n\r", volumen_segun_tanque);
+	////printf("volumen segun tanque: %d\n\n\r", volumen_segun_tanque);
+	////printf("vst: %d\n\r", volumen_segun_tanque);
 	
 	
 	return (int)real_volume;
@@ -859,50 +868,50 @@ ISR(USART_RX_vect){
 	
 		if (RxBuffer[0] == 0x5B){				//[
 			wp1_speed = RxBuffer[1];
-			printf("WP1 Speed: %d\n\r", wp1_speed);
+			//printf("WP1 Speed: %d\n\r", wp1_speed);
 			
 		}
 		
 		else if (RxBuffer[0] == 0x4A){			//J
-			//printf("liquid level tank 1: ");
-			//printf("%x\n\r", RxBuffer[1]);
+			////printf("liquid level tank 1: ");
+			////printf("%x\n\r", RxBuffer[1]);
 			level_t1 = RxBuffer[1];
-			printf("Tank 1 Volume: %d\n\r", level_t1);
+			//printf("Tank 1 Volume: %d\n\r", level_t1);
 		}
 	
 		else if (RxBuffer[0] == 0x3D){			//=
 			wp2_speed = RxBuffer[1];
-			printf("WP2 Speed: %d\n\r", wp2_speed);
+			//printf("WP2 Speed: %d\n\r", wp2_speed);
 		}
 	
 		else if (RxBuffer[0] == 0x2C){			//,
-			//printf("liquid level tank 2: ");
-			//printf("%x\n\r", RxBuffer[1]);
+			////printf("liquid level tank 2: ");
+			////printf("%x\n\r", RxBuffer[1]);
 			level_t2 = RxBuffer[1];
-			printf("Tank 2 Volume: %d\n\r", level_t2);
+			//printf("Tank 2 Volume: %d\n\r", level_t2);
 		}
 			
 		else if (RxBuffer[0] == 0x1F){			//unit separator alt+31
-			//printf("%x\n\r", RxBuffer[1]);
+			////printf("%x\n\r", RxBuffer[1]);
 			user_temperature = RxBuffer[1];
-			printf("Liquid's Temperature: %d\n\r", user_temperature);
+			//printf("Liquid's Temperature: %d\n\r", user_temperature);
 		}
 		
 		else if (RxBuffer[0] == 0x4E){			//N
-			//printf("%x\n\r", RxBuffer[1]);
+			////printf("%x\n\r", RxBuffer[1]);
 			hres_power = RxBuffer[1];
-			//printf("Heating Resistance Power: %d\n\r",hres_power);
+			////printf("Heating Resistance Power: %d\n\r",hres_power);
 		}
 		
 		else if (RxBuffer[0] == 0x0E){			//shiftout alt+14
-			//printf("%x\n\r", RxBuffer[1]);
+			////printf("%x\n\r", RxBuffer[1]);
 			waiting_time = RxBuffer[1];
-			printf("Waiting time: %d\n\r", waiting_time);
+			//printf("Waiting time: %d\n\r", waiting_time);
 		}
 		
 		else if (RxBuffer[0] == START){			//newline alt+10 alt+1
 			
-			//printf("%x\n\r", RxBuffer[1]);
+			////printf("%x\n\r", RxBuffer[1]);
 			
 			if (wp1_speed != 0 && wp2_speed != 0 && level_t1 != 0 && level_t2 != 0 && user_temperature != 0
 			&& hres_power != 0 && waiting_time != 0){
@@ -916,14 +925,14 @@ ISR(USART_RX_vect){
 				
 				start = RxBuffer[1];
 				stop = 0;
-				//printf("Indication: START %d\n\r", start);
+				////printf("Indication: START %d\n\r", start);
 			}
 		}
 		
 		else if (RxBuffer[0] == STOP){			//_
 			
 			stop = RxBuffer[1];
-			printf("Indication: STOP %d\n\r", stop);
+			//printf("Indication: STOP %d\n\r", stop);
 			stop_actuators();
 		}
 		
@@ -931,7 +940,7 @@ ISR(USART_RX_vect){
 			
 			serve = RxBuffer[1];
 			
-			//printf("Indication: SERVE %d\n\r", serve);
+			////printf("Indication: SERVE %d\n\r", serve);
 				
 		}
 			

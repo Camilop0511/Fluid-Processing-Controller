@@ -198,7 +198,7 @@
     $f6_received = false;
     $n9a_received = false;
     
-   while (true) {
+   //while (true) {
         $byte = fread($serialPort, 1);
        //echo "Received byte: " . bin2hex($byte) . "\n";
 
@@ -301,7 +301,7 @@
                 }
             break;
         }
-    }
+    //}
     fclose($serialPort);
 
 

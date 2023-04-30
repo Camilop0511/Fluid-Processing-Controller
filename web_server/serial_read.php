@@ -3,6 +3,10 @@
     system('stty -F /dev/ttyS0 57600');
     
     //$real_volume = 22;
+	// Create an empty array
+	$json_array = array();
+
+
 
     $a3_received = false;
     $b4_received = false;
@@ -88,6 +92,9 @@
                     echo "Step: " . ord($byte) . "\n";
                     $step_rx = ord($byte);
                     $a3_received = false;
+					
+					$data[] = array(
+						"step" => $step_rx);
                 } elseif ($b4_received) {
                     echo "Temperature: " . ord($byte) . "\n";
                     $temperature_rx = ord($byte); 
@@ -121,12 +128,11 @@
     fclose($serialPort);
 
 
-// Create an empty array
-$json_array = array();
+
 
 // Check if $step_rx has a value and add it to the array
-if (isset($step_rx)) {
-    $json_array['step'] = $step_rx;
+//if (isset($step_rx)) {
+ //   $json_array['step'] = $step_rx;
 }
 
 // Encode the array as a JSON string and echo it

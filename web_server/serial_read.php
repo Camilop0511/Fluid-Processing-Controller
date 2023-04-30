@@ -133,7 +133,7 @@
 // Check if $step_rx has a value and add it to the array
 //if (isset($step_rx)) {
  //   $json_array['step'] = $step_rx;
-}
+//}
 
 // Encode the array as a JSON string and echo it
 echo json_encode($json_array);

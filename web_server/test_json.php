@@ -6,7 +6,7 @@
 		$(document).ready(function() {
 			setInterval(function() {
 				// make an AJAX request to fetch the values from serial_read.php
-				$.getJSON('test_json2', function(data) {
+				$.getJSON('test_json2.php', function(data) {
 					// update the HTML content with the real_volume value
 					$("#real-volume").html(data.real_volume);
 				});

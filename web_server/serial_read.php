@@ -99,6 +99,10 @@
                     echo "Temperature: " . ord($byte) . "\n";
                     $temperature_rx = ord($byte); 
                     $b4_received = false;
+					
+					$data[] = array(
+						"temperature_rx" => $temperature_rx);
+					
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);
                     $real_volume = ($level_pt * 6.24824) - 9.16149;

@@ -6,9 +6,10 @@
 	// Create an empty array
 	$json_array = array();
 
+	$test = 200;
 
 	$data[] = array(
-		"temperature_rx" => 150);
+		"temperature_rx" => $test);
 
 
     $a3_received = false;

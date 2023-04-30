@@ -29,6 +29,9 @@
         <p>
              Step: <span id="step_rx"></span> 
         </p>
+		<p>
+             Temperature: <span id="temperature_rx"></span> 
+        </p>
 
 
         <button onclick="start_process()">Start Process</button>
@@ -68,6 +71,7 @@
                 $.getJSON('serial_read.php', function(data) {
                     // update the values in the HTML elements
 					$('#step_rx').text(data.step_rx);
+					$('#temperature_rx').text(data.temperature_rx);
                     //$('#real_volume').text(data.real_volume);
                     /*$('#tank2').text(data.tank2);
                     $('#water_p1').text(data.water_p1);
@@ -76,7 +80,7 @@
                     $('#hres').text(data.hres);
                     $('#sec').text(data.sec);*/
                 });
-            }, 5000); // fetch the data every 5 seconds
+            }, 1000); // fetch the data every 1 second
         });
     </script>
 

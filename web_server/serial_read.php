@@ -121,16 +121,12 @@
     fclose($serialPort);
 
 
-    // return variables as JSON
-  $variables = array(
-        "step_rx" => $step_rx,
-        "temperature_rx" => $temperature_rx,
-        "real_volume" => $real_volume,
-        "start_state" => $start_state,
-        "stop_state" => $stop_state,
-        "serve_state" => $serve_state,
-        "serve_count" => $serve_count
-    );
+	$data = array();
 
-   echo json_encode($variables);
+    // return variables as JSON
+    $data['step'] = $step_rx;
+
+	$json = json_encode($data);
+
+   echo json_encode($data);
 ?> 

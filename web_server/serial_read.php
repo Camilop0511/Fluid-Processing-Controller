@@ -121,12 +121,15 @@
     fclose($serialPort);
 
 
-	$data = array();
+// Create an empty array
+$json_array = array();
 
-    // return variables as JSON
-    $data['step'] = $step_rx;
+// Check if $step_rx has a value and add it to the array
+if (isset($step_rx)) {
+    $json_array['step'] = $step_rx;
+}
 
-	$json = json_encode($data);
+// Encode the array as a JSON string and echo it
+echo json_encode($json_array);
 
-   echo json_encode($data);
 ?> 

@@ -101,7 +101,7 @@
                     $b4_received = false;
 					
 					$data[] = array(
-						"temperature_rx" => $temperature_rx);
+						"temperature_rx" => 150);
 					
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);

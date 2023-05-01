@@ -17,7 +17,7 @@
     
    $start_time = time();
     
-   while (time() - $start_time < 1) {
+   while (time() - $start_time < 2) {
 	 //while(true){
         $byte = fread($serialPort, 1);
        //echo "Received byte: " . bin2hex($byte) . "\n";
@@ -162,7 +162,7 @@ if (isset($serve_count)) {
 }
 
 // Encode the array as a JSON string and echo it
-echo json_encode($data);
+//echo json_encode($data);
 
 
 ?> 

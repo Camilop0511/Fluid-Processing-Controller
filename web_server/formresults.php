@@ -71,8 +71,10 @@
             $.getJSON('serial_read.php', function(data) {
                 console.log(data);
                 // update the values in the HTML elements
-                $('#temperature_rx').text(data[0].temperature_rx);
-                console.log("temperature_rx:", data[0].temperature_rx);
+                $('#step_rx').text(data[0].step_rx);
+				$('#temperature_rx').text(data[0].temperature_rx);
+				console.log("step_rx:", data[0].step_rx);
+                console.log("temperature_rx:", data[0].temperature_rx);	
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
             });

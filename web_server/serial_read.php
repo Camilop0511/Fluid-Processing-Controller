@@ -89,34 +89,34 @@
                 break;
             default:
                 if ($a3_received) {
-                    echo "Step: " . ord($byte) . "\n";
+                    //echo "Step: " . ord($byte) . "\n";
                     $step_rx = ord($byte);
                     $a3_received = false;
                 } elseif ($b4_received) {
-                    echo "Temperature: " . ord($byte) . "\n";
+                    //echo "Temperature: " . ord($byte) . "\n";
                     $temperature_rx = ord($byte); 
                     $b4_received = false;
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);
                     $real_volume = ($level_pt * 6.24824) - 9.16149;
-                    echo "Level (pt): " . $level_pt . "\n";
-                    echo "Real Volume: " . intval($real_volume) . "\n";
+                    //echo "Level (pt): " . $level_pt . "\n";
+                    //echo "Real Volume: " . intval($real_volume) . "\n";
                     $c5_received = false;
                 } elseif ($d1_received) {
                     $start_state = ord($byte);
-                    echo "Start State: " . $start_state . "\n";
+                   // echo "Start State: " . $start_state . "\n";
                     $d1_received = false;
                 } elseif ($e2_received) {
                     $stop_state = ord($byte);
-                    echo "Stop State: " . $stop_state . "\n";
+                   // echo "Stop State: " . $stop_state . "\n";
                     $e2_received = false;
                 } elseif ($f6_received) {
                     $serve_state = ord($byte);
-                    echo "Serve State: " . $serve_state . "\n\n";
+                    //echo "Serve State: " . $serve_state . "\n\n";
                     $f6_received = false;
                 } elseif ($n9a_received) {
                     $serve_count = ord($byte);
-                    echo "Serve Count: " . $serve_count . "\n";
+                   // echo "Serve Count: " . $serve_count . "\n";
                     $n9a_received = false;
                 }
             break;
@@ -162,7 +162,7 @@ if (isset($serve_count)) {
 }
 
 // Encode the array as a JSON string and echo it
-//echo json_encode($data);
+echo json_encode($data);
 
 
 ?> 

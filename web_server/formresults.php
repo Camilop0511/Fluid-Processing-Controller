@@ -200,5 +200,5 @@ foreach ($data as $value) {
 
 // encode the new array as a JSON string and echo it
 $json_string = json_encode($data_array);
-echo $json_string;
+//echo $json_string;
 ?>

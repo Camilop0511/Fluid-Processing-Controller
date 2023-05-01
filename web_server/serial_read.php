@@ -126,13 +126,13 @@
 
 // Check if $step_rx has a value and add it to the array
 if (isset($step_rx)) {
-    $data[] = array(
+    $data[0] = array(
         "step_rx" => $step_rx);
 }
 
 // Check if $temperature_rx has a value and add it to the array
 if (isset($temperature_rx)) {
-    $data[] = array(
+    $data[1] = array(
         "temperature_rx" => $temperature_rx);
 }
 

@@ -162,7 +162,7 @@ if (isset($serve_count)) {
 }
 
 // Encode the array as a JSON string and echo it
-//echo json_encode($data);
+echo json_encode($data);
 
 
 ?> 

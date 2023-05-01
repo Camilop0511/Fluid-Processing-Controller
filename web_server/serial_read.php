@@ -2,9 +2,8 @@
     $serialPort = fopen('/dev/ttyS0', 'r');
     system('stty -F /dev/ttyS0 57600');
     
-    //$real_volume = 22;
 	// Create an empty array
-	$json_array = array();
+	$json_array = array(2);
 
 
     $a3_received = false;
@@ -20,8 +19,6 @@
    while (time() - $start_time < 1) {
 	 //while(true){
         $byte = fread($serialPort, 1);
-       //echo "Received byte: " . bin2hex($byte) . "\n";
-
     
         switch ($byte) {
             case "\xa3":
@@ -135,36 +132,6 @@ if (isset($temperature_rx)) {
     $data[1] = array(
         "temperature_rx" => $temperature_rx);
 }
-
-/*// Check if $real_volume has a value and add it to the array
-if (isset($real_volume)) {
-    $data[] = array(
-        "real_volume" => $real_volume);
-}
-
-// Check if $start_state has a value and add it to the array
-if (isset($start_state)) {
-    $data[] = array(
-        "start_state" => $start_state);
-}
-
-// Check if $stop_state has a value and add it to the array
-if (isset($stop_state)) {
-    $data[] = array(
-        "stop_state" => $stop_state);
-}
-
-// Check if $serve_state has a value and add it to the array
-if (isset($serve_state)) {
-    $data[] = array(
-        "serve_state" => $serve_state);
-}
-
-// Check if $serve_count has a value and add it to the array
-if (isset($serve_count)) {
-    $data[] = array(
-        "serve_count" => $serve_count);
-}*/
 
 // Encode the array as a JSON string and echo it
 echo json_encode($data);

@@ -64,7 +64,7 @@
             xhttp.send();
         }   
     </script>
-	<!--<script>
+	--<script>
     $(document).ready(function() {
         setInterval(function() {
             // make an AJAX request to fetch the values from serial_read.php
@@ -80,7 +80,7 @@
             });
         }, 200); // fetch the data every 1 second
     });
-	</script>-->
+	</script>
 
 
 

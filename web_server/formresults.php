@@ -190,7 +190,7 @@
 ?>
 
 <?php
-// include the file with the $data array
+/*// include the file with the $data array
 include 'serial_read.php';
 
 // create an array to hold the retrieved data
@@ -203,5 +203,5 @@ foreach ($data as $value) {
 
 // encode the new array as a JSON string and echo it
 $json_string = json_encode($data_array);
-//echo $json_string;
+//echo $json_string;*/
 ?>

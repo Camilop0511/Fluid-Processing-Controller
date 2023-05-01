@@ -125,16 +125,16 @@
     fclose($serialPort);
 
 // Check if $step_rx has a value and add it to the array
-if (isset($step_rx)) {
+//if (isset($step_rx)) {
     $data[] = array(
         "step_rx" => $step_rx);
-}
+//}
 
 // Check if $temperature_rx has a value and add it to the array
-if (isset($temperature_rx)) {
+//if (isset($temperature_rx)) {
     $data[] = array(
         "temperature_rx" => $temperature_rx);
-}
+//}
 
 /*// Check if $real_volume has a value and add it to the array
 if (isset($real_volume)) {

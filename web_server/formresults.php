@@ -64,22 +64,22 @@
             xhttp.send();
         }   
     </script>
-<script>
-    $(document).ready(function() {
-        setInterval(function() {
-            // make an AJAX request to fetch the values from serial_read.php
-            $.getJSON('serial_read.php', function(data) {
-                console.log(data);
-                // update the values in the HTML elements
-                $('#temperature_rx').text(data[0].temperature_rx);
-                console.log("temperature_rx:", data[0].temperature_rx);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error(textStatus, errorThrown);
-            });
-        }, 1000); // fetch the data every 1 second
-    });
-</script>
-
+    <!--<script>
+        $(document).ready(function() {
+            setInterval(function() {
+                // make an AJAX request to fetch the values from serial_read.php
+                $.getJSON('serial_read.php', function(data) {
+				console.log(data);
+				// update the values in the HTML elements
+				$('#step_rx').text(data.step_rx);
+				$('#temperature_rx').text(data.temperature_rx);
+				console.log("temperature_rx:", data.temperature_rx);
+			})/*.fail(function(jqXHR, textStatus, errorThrown) {
+				console.error(textStatus, errorThrown);
+			});*/
+            }, 1000); // fetch the data every 1 second
+        });
+    </script>-->
 
 </html>
 
@@ -200,5 +200,5 @@ foreach ($data as $value) {
 
 // encode the new array as a JSON string and echo it
 $json_string = json_encode($data_array);
-//echo $json_string;
+echo $json_string;
 ?>

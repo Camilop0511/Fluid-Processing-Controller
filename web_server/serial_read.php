@@ -15,7 +15,7 @@
     $f6_received = false;
     $n9a_received = false;
     
-   //$start_time = time();
+   $start_time = time();
     
    while (time() - $start_time < 1) {
 	 //while(true){

@@ -16,7 +16,7 @@
     
    $start_time = time();
     
-   while (time() - $start_time < 1) {
+   //while (time() - $start_time < 1) {
 	 //while(true){
         $byte = fread($serialPort, 1);
     
@@ -118,7 +118,7 @@
                 }
             break;
         }
-    }
+    //}
     fclose($serialPort);
 
 // Check if $step_rx has a value and add it to the array

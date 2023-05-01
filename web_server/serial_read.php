@@ -136,7 +136,7 @@ if (isset($temperature_rx)) {
         "temperature_rx" => $temperature_rx);
 }
 
-// Check if $real_volume has a value and add it to the array
+/*// Check if $real_volume has a value and add it to the array
 if (isset($real_volume)) {
     $data[] = array(
         "real_volume" => $real_volume);
@@ -164,7 +164,7 @@ if (isset($serve_state)) {
 if (isset($serve_count)) {
     $data[] = array(
         "serve_count" => $serve_count);
-}
+}*/
 
 // Encode the array as a JSON string and echo it
 echo json_encode($data);

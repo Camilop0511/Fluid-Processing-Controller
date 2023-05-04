@@ -36,7 +36,7 @@
              Temperature: <span id="temperature_rx"></span> 
         </p>
         <p>
-             Processing Tank Volume: <span id="real_volume"></span> 
+             Processing Tank Volume: <span id="real_volume_int"></span> 
         </p>
 
 
@@ -83,8 +83,8 @@
                 if(data[1] && data[1].temperature_rx >= 15 && data[1].temperature_rx <= 65){
                     $('#temperature_rx').text(data[1].temperature_rx);
                 }
-                if(data[2] && data[2].real_volume >= 0 && data[2].real_volume <= 1500){
-                    $('#real_volume').text(data[2].real_volume);
+                if(data[2] && data[2].real_volume_int >= 0 && data[2].real_volume_int <= 1500){
+                    $('#real_volume_int').text(data[2].real_volume_int);
                 }
 
             }).fail(function(jqXHR, textStatus, errorThrown) {

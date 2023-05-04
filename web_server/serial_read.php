@@ -98,6 +98,7 @@
                     $real_volume = ($level_pt * 6.24824) - 9.16149;
                     //echo "Level (pt): " . $level_pt . "\n";
                     //echo "Real Volume: " . intval($real_volume) . "\n";
+                    $real_volume_int = intval($real_volume);
                     $c5_received = false;
                 } elseif ($d1_received) {
                     $start_state = ord($byte);
@@ -134,9 +135,9 @@ if (isset($temperature_rx)) {
 }
 
 // Check if $_rx has a value and add it to the array
-if (isset($real_volume)) {
+if (isset($real_volume_int)) {
     $data[2] = array(
-        "real_volume" => $real_volume);
+        "real_volume_int" => $real_volume_int);
 }
 
 

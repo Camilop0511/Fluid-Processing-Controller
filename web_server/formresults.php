@@ -44,6 +44,10 @@
         <p>
              Stop State: <span id="stop_state"></span> 
         </p>
+        <br>
+        <p>
+             Serve State: <span id="serve_state"></span> 
+        </p>
 
         <button onclick="start_process()">Start Process</button>
         <button onclick="stop_process()">Stop Process</button>
@@ -96,6 +100,9 @@
                 }
                 if(data[4]&& data[4].stop_state >= 0 && data[4].stop_state <= 1){
                     $('#stop_state').text(data[4].stop_state);
+                }
+                if(data[5]&& data[5].serve_state >= 0 && data[4].serve_state <= 1){
+                    $('#serve_state').text(data[5].serve_state);
                 }
 
             }).fail(function(jqXHR, textStatus, errorThrown) {

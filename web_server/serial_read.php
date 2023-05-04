@@ -155,6 +155,11 @@ if (isset($stop_state)) {
         "stop_state" => $stop_state);
 }
 
+// Check if $start_state_rx has a value and add it to the array
+if (isset($serve_state)) {
+    $data[5] = array(
+        "serve_state" => $serve_state);
+}
 
 // Encode the array as a JSON string and echo it
 echo json_encode($data);

@@ -94,14 +94,14 @@
                 if(data[3] && data[3].start_state >= 0 && data[3].start_state <= 1){
                     $('#start_state').text(data[3].start_state);
                 }
-                if(data[4]){
+                if(data[4]&& data[4].stop_state >= 0 && data[4].stop_state <= 1){
                     $('#stop_state').text(data[4].stop_state);
                 }
 
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
             });
-        }, 850); // fetch the data every 1 second
+        }, 750); // fetch the data every 1 second
     });
 	</script>
 

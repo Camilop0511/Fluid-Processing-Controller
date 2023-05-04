@@ -137,32 +137,36 @@ if (isset($temperature_rx)) {
         "temperature_rx" => $temperature_rx);
 }
 
-// Check if $real_volume_int_rx has a value and add it to the array
+// Check if $real_volume_int has a value and add it to the array
 if (isset($real_volume_int)) {
     $data[2] = array(
         "real_volume_int" => $real_volume_int);
 }
 
-// Check if $start_state_rx has a value and add it to the array
+// Check if $start_state has a value and add it to the array
 if (isset($start_state)) {
     $data[3] = array(
         "start_state" => $start_state);
 }
 
-// Check if $start_state_rx has a value and add it to the array
+// Check if $stop_state has a value and add it to the array
 if (isset($stop_state)) {
     $data[4] = array(
         "stop_state" => $stop_state);
 }
 
-// Check if $start_state_rx has a value and add it to the array
+// Check if $start_state has a value and add it to the array
 if (isset($serve_state)) {
     $data[5] = array(
         "serve_state" => $serve_state);
 }
 
+// Check if $n9a_received has a value and add it to the array
+if (isset($n9a_received)) {
+    $data[6] = array(
+        "n9a_received" => $n9a_received);
+}
+
 // Encode the array as a JSON string and echo it
 echo json_encode($data);
-
-
 ?> 

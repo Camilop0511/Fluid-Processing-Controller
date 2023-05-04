@@ -167,7 +167,8 @@ if (isset($n9a_received)) {
         "n9a_received" => $n9a_received);
 }
 else{
-    $data[6] = 0;
+    $data[6] = array(
+        "n9a_received" = 0);
 }
 
 // Encode the array as a JSON string and echo it

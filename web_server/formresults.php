@@ -90,7 +90,7 @@
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
             });
-        }, 1000); // fetch the data every 1 second
+        }, 750); // fetch the data every 1 second
     });
 	</script>
 

@@ -16,7 +16,7 @@
     
    $start_time = time();
    //$start_time = microtime(true); // Set the start time to the current microtime
-   while (time() - $start_time < 1) {
+   while (time() - $start_time < 0.75) {
 	//while ((microtime(true) - $start_time) < 0.00025) {
         $byte = fread($serialPort, 1);
     

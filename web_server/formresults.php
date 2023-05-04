@@ -26,11 +26,17 @@
         <p>
             Cooldown Time: <?= (int)$_POST['sec']; ?> 
         </p>
+        <br>
+        <br>
+
         <p>
              Step: <span id="step_rx"></span> 
         </p>
 		<p>
              Temperature: <span id="temperature_rx"></span> 
+        </p>
+        <p>
+             Processing Tank Volume: <span id="temperature_rx"></span> 
         </p>
 
 
@@ -74,9 +80,13 @@
                 if (data[0] && data[0].step_rx >= 0 && data[0].step_rx <= 10) {
                     $('#step_rx').text(data[0].step_rx);
                 }
-                if(data[1] && data[1].temperature_rx >= 15 && data[1].temperature_rx <= 65 ){
+                if(data[1] && data[1].temperature_rx >= 15 && data[1].temperature_rx <= 65){
                     $('#temperature_rx').text(data[1].temperature_rx);
                 }
+                if(data[2] && data[2].real_volume >= 0 && data[2].real_volume <= 1500){
+                    $('#real_volume').text(data[2].real_volume);
+                }
+
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
             });

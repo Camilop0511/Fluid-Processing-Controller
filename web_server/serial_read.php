@@ -162,13 +162,9 @@ if (isset($serve_state)) {
 }
 
 // Check if $n9a_received has a value and add it to the array
-if (isset($n9a_received)) {
+if (isset($serve_count)) {
     $data[6] = array(
-        "n9a_received" => $n9a_received);
-}
-else{
-    $data[6] = array(
-        "n9a_received" => 0);
+        "serve_count" => $serve_count);
 }
 
 // Encode the array as a JSON string and echo it

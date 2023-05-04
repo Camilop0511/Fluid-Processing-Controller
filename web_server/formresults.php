@@ -49,7 +49,7 @@
              Serve State: <span id="serve_state"></span> 
         </p>
         <p>
-             Cooldown Counter: <span id="n9a_received"></span> 
+             Cooldown Counter: <span id="serve_count"></span> 
         </p>
         <button onclick="start_process()">Start Process</button>
         <button onclick="stop_process()">Stop Process</button>
@@ -106,8 +106,8 @@
                 if(data[5]&& data[5].serve_state >= 0 && data[5].serve_state <= 1){
                     $('#serve_state').text(data[5].serve_state);
                 }
-                if(data[6]&& data[6].n9a_received >= 0 && data[6].n9a_received <= 45){
-                    $('#n9a_received').text(data[6].n9a_received);
+                if(data[6]&& data[6].serve_count >= 0 && data[6].serve_count <= 45){
+                    $('#serve_count').text(data[6].serve_count);
                 }
 
             }).fail(function(jqXHR, textStatus, errorThrown) {

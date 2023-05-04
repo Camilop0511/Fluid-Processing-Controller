@@ -36,7 +36,7 @@
              Temperature: <span id="temperature_rx"></span> 
         </p>
         <p>
-             Processing Tank Volume: <span id="temperature_rx"></span> 
+             Processing Tank Volume: <span id="real_volume"></span> 
         </p>
 
 

@@ -96,8 +96,7 @@
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);
                     $real_volume = ($level_pt * 6.24824) - 9.16149;
-                    if($real_volume < 0)
-                    {
+                    if($real_volume < 0){
                         $real_volume = 0;
                     }
                     //echo "Level (pt): " . $level_pt . "\n";
@@ -150,7 +149,11 @@ if (isset($start_state)) {
         "start_state" => $start_state);
 }
 
-
+// Check if $start_state_rx has a value and add it to the array
+if (isset($stop_state)) {
+    $data[4] = array(
+        "stop_state" => $stop_state);
+}
 
 
 // Encode the array as a JSON string and echo it

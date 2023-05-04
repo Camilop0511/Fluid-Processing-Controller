@@ -28,7 +28,6 @@
         </p>
         <br>
         <br>
-
         <p>
              Step: <span id="step_rx"></span> 
         </p>
@@ -38,7 +37,13 @@
         <p>
              Processing Tank Volume: <span id="real_volume_int"></span> 
         </p>
-
+        <br>
+        <p>
+             Start State: <span id="start_state"></span> 
+        </p>
+        <p>
+             Stop State: <span id="stop_state"></span> 
+        </p>
 
         <button onclick="start_process()">Start Process</button>
         <button onclick="stop_process()">Stop Process</button>
@@ -85,6 +90,12 @@
                 }
                 if(data[2] && data[2].real_volume_int >= 0 && data[2].real_volume_int <= 1500){
                     $('#real_volume_int').text(data[2].real_volume_int);
+                }
+                if(data[3]){
+                    $('#start_state').text(data[3].start_state);
+                }
+                if(data[4]){
+                    $('#stop_state').text(data[4].stop_state);
                 }
 
             }).fail(function(jqXHR, textStatus, errorThrown) {

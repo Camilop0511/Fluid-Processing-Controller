@@ -167,7 +167,8 @@ if (isset($serve_count)) {
         "serve_count" => $serve_count);
 }
 else{
-    $data[6] = 0;
+    $data[6] = array(
+        "serve_count" => 0);
 }
 
 // Encode the array as a JSON string and echo it

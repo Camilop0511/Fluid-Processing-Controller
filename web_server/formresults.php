@@ -74,7 +74,7 @@
                 if (data[0] && data[0].step_rx >= 0 && data[0].step_rx <= 10) {
                     $('#step_rx').text(data[0].step_rx);
                 }
-                if(data[1]){
+                if(data[1] && data[1].temperature_rx >= 15 && data[1].temperature_rx <= 65 ){
                     $('#temperature_rx').text(data[1].temperature_rx);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {

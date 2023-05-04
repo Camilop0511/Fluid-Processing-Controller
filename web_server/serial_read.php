@@ -96,6 +96,10 @@
                 } elseif ($c5_received) {
                     $level_pt = ord($byte);
                     $real_volume = ($level_pt * 6.24824) - 9.16149;
+                    if($real_volume < 0)
+                    {
+                        $real_volume = 0;
+                    }
                     //echo "Level (pt): " . $level_pt . "\n";
                     //echo "Real Volume: " . intval($real_volume) . "\n";
                     $real_volume_int = intval($real_volume);
@@ -134,12 +138,17 @@ if (isset($temperature_rx)) {
         "temperature_rx" => $temperature_rx);
 }
 
-// Check if $_rx has a value and add it to the array
+// Check if $real_volume_int_rx has a value and add it to the array
 if (isset($real_volume_int)) {
     $data[2] = array(
         "real_volume_int" => $real_volume_int);
 }
 
+// Check if $start_state_rx has a value and add it to the array
+if (isset($start_state)) {
+    $data[3] = array(
+        "start_state" => $start_state);
+}
 
 
 

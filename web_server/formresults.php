@@ -71,7 +71,7 @@
             $.getJSON('serial_read.php', function(data) {
                 console.log(data);
                 // update the values in the HTML elements
-                if (data[0] != 0) {
+                if (data[0] && data[0].step_rx >= 0 && data[0].step_rx <= 10) {
                     $('#step_rx').text(data[0].step_rx);
                 }
                 if(data[1]){

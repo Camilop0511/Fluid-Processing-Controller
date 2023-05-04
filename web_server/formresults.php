@@ -91,7 +91,7 @@
                 if(data[2] && data[2].real_volume_int >= 0 && data[2].real_volume_int <= 1500){
                     $('#real_volume_int').text(data[2].real_volume_int);
                 }
-                if(data[3]){
+                if(data[3] && data[3].start_state >= 0 && data[3].start_state <= 1){
                     $('#start_state').text(data[3].start_state);
                 }
                 if(data[4]){

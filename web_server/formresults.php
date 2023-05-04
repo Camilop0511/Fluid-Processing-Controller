@@ -107,7 +107,7 @@
                     $('#serve_state').text(data[5].serve_state);
                 }
                 if(data[6]&& data[6].n9a_received >= 0 && data[6].n9a_received <= 45){
-                    $('#n9a_received').text(data[5].n9a_received);
+                    $('#n9a_received').text(data[6].n9a_received);
                 }
 
             }).fail(function(jqXHR, textStatus, errorThrown) {

@@ -74,7 +74,7 @@
                 if(data[0]){
                     $('#step_rx').text(data[0].step_rx);
                 }
-                if(data[1].temperature_rx !== undefined){
+                if(data[1]){
                     $('#temperature_rx').text(data[1].temperature_rx);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {

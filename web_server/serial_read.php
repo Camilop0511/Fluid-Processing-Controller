@@ -166,7 +166,7 @@ if (isset($serve_count)) {
     $data[6] = array(
         "serve_count" => $serve_count);
 }
-else{
+else if($step_rx =! 8){
     $data[6] = array(
         "serve_count" => 0);
 }

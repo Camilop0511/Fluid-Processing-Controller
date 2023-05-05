@@ -166,10 +166,10 @@ if (isset($serve_count)) {
     $data[6] = array(
         "serve_count" => $serve_count);
 }
-else if($step_rx == 0){
+/*else if($step_rx == 0){
     $data[6] = array(
         "serve_count" => 0);
-}
+}*/
 
 // Encode the array as a JSON string and echo it
 echo json_encode($data);

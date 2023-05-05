@@ -113,7 +113,7 @@
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
             });
-        }, 750); // fetch the data every 1 second
+        }, 1000); // fetch the data every 1 second
     });
 	</script>
 

@@ -35,7 +35,7 @@
             <p>
                 <label for="tmp">Please enter the desired temperature (23&deg;C - 30&deg;C):</label>
                 <input type="text" id="temp" name="temp" pattern="^(2[3-9]|[3-9][0-9]|30)$" 
-                onblur="requiredf(this)" placeholder="25" title="Values from 30 to 75 only" required> &deg;C
+                onblur="requiredf(this)" placeholder="25" title="Values from 23 to 30 only" required> &deg;C
 
             </p>
             <p>
@@ -47,7 +47,7 @@
             <br>
 
             <p>
-                <label for="secs">Please enter the desired cool-down time before serving:</label>
+                <label for="secs">Please enter the desired cool-down time before serving (10s - 120s):</label>
                 <input type="text" id="sec" name="sec" pattern="^(1[0-1][0-9]|120|[1-9][0-9]|10)$" 
                 onblur="requiredf(this)" placeholder="15" title="Values from 10 to 120 only" required> seconds
 

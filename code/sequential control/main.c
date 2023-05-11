@@ -44,6 +44,7 @@
 #define STOP_STATE 0xE2
 #define SERVE_STATE 0xF6
 #define SERVE_COUNT_STATE 0x9A
+#define ERROR_TX 0x3E
 
 //Defines for control panel
 #define start_led PB2
@@ -237,8 +238,8 @@ int main(void)
 		_delay_ms(250);
 
 		////printf("level_pt: %d\n\r", level_pt);
-		//uart_tx(VOLUME);
-		//uart_tx(level_pt);
+		uart_tx(VOLUME);
+		uart_tx(level_pt);
 		_delay_ms(10);
 		
 		
@@ -248,8 +249,13 @@ int main(void)
 		
 		printf("temperature: %d\n\r", real_temperature);
 		_delay_ms(250);
-		//uart_tx(TEMPERATURE);
-		//uart_tx(real_temperature);
+		uart_tx(TEMPERATURE);
+		uart_tx(real_temperature);
+		_delay_ms(10);
+		
+		printf("Step: %d\n\r", step);
+		uart_tx(STEP);
+		uart_tx(step);
 		_delay_ms(10);
 		
 		
@@ -298,21 +304,21 @@ int main(void)
 		printf("Start state: %d\n\r", start);
 		_delay_ms(100);
 		
-		//uart_tx(START_STATE);
-		//uart_tx(start);
+		uart_tx(START_STATE);
+		uart_tx(start);
 		_delay_ms(10);
 		
 		printf("Stop state: %d\n\n\r", stop);
 		_delay_ms(100);
 		
-		//uart_tx(STOP_STATE);
-		//uart_tx(stop);
+		uart_tx(STOP_STATE);
+		uart_tx(stop);
 		_delay_ms(10);
 	
 		////printf("%d\n\r", step);
 		
-		//uart_tx(SERVE_STATE);
-		//uart_tx(serve);
+		uart_tx(SERVE_STATE);
+		uart_tx(serve);
 		_delay_ms(10);
 		
 		
@@ -322,6 +328,10 @@ int main(void)
 			/*stop = 1;
 			start = 0;*/
 			printf("Error T1\n\r");
+			
+			uart_tx(ERROR_TX);
+			uart_tx(0x8B);
+			
 		}
 		
 		//T1 is empty
@@ -330,6 +340,9 @@ int main(void)
 			stop = 1;
 			start = 0;
 			printf("T1 Empty\n\r");
+			
+			uart_tx(ERROR_TX);
+			uart_tx(0x7C);
 		}
 		
 		//T2 error
@@ -338,6 +351,9 @@ int main(void)
 			stop = 1;
 			start = 0;
 			printf("Error T2\n\r");
+			
+			uart_tx(ERROR_TX);
+			uart_tx(0x6D);
 		}
 		
 		//T2 is empty
@@ -346,6 +362,9 @@ int main(void)
 			stop = 1;
 			start = 0;
 			printf("T2 Empty\n\r");
+			
+			uart_tx(ERROR_TX);
+			uart_tx(0x5E);
 		}
 		
 		
@@ -355,6 +374,9 @@ int main(void)
 			stop = 1;
 			start = 0;
 			printf("Processing Tank Overflow\n\r");
+			
+			uart_tx(ERROR_TX);
+			uart_tx(0x39);
 		}
 			
 		
@@ -364,8 +386,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(100);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 				
@@ -379,8 +401,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			//Transfer communication variables to process variables
@@ -420,8 +442,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			percentage = numeric_to_percentage_wps(wp1_speed_process);
@@ -437,8 +459,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			
@@ -455,8 +477,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			
@@ -473,8 +495,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			////uart_tx(STEP);
-			////uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			percentage = numeric_to_percentage_wps(wp2_speed_process);
@@ -490,8 +512,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(100);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			percentage = numeric_to_percentage_h_res(hres_process);
@@ -506,33 +528,37 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			h_resis = 0;
 		}
 		
 		//Step 8
-		//Cooltime
+		//Cooldown time
 		if(step == 7 && start == 1 && stop == 0){
+			int r;
 			
 			step = 8;
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
+			
+			
 			
 			for(cd_counter = 0; cd_counter <= waiting_time_process; cd_counter++){
 				_delay_ms(1000);
 				printf("%d\n\r", cd_counter);
 				
-				//uart_tx(SERVE_COUNT_STATE);
-				//uart_tx(cd_counter);
-				_delay_ms(10);
-				
+				for(r=0; r<=5; r++){
+					uart_tx(SERVE_COUNT_STATE);
+					uart_tx(cd_counter);
+					_delay_ms(20);
+				}
 				
 				if(stop == 1)
 				break;
@@ -548,8 +574,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			electro_v_state(1);	
@@ -563,8 +589,8 @@ int main(void)
 			printf("Step: %d\n\r", step);
 			_delay_ms(500);
 			
-			//uart_tx(STEP);
-			//uart_tx(step);
+			uart_tx(STEP);
+			uart_tx(step);
 			_delay_ms(10);
 			
 			electro_v_state(0);
@@ -590,7 +616,7 @@ int main(void)
 	char message[] = "Hello, World\n\r";
 	int i;
 	for (i = 0; i < sizeof(message) - 1; i++) {
-		//uart_tx(message[i]);
+		////uart_tx(message[i]);
 	}
 }*/
 
@@ -683,7 +709,7 @@ int ascii_input(void){
 	
 	do{
 		input[length] = uart_rx();
-		//uart_tx(input[length]);
+		////uart_tx(input[length]);
 		length++;
 	} while ((length < 4) && (input[length-1] != '\r'));
 	
@@ -842,6 +868,11 @@ int adc_to_volume(void){
 	//volumen_segun_tanque = (level * 6.32878) - 2.08289;
 	////printf("volumen segun tanque: %d\n\n\r", volumen_segun_tanque);
 	////printf("vst: %d\n\r", volumen_segun_tanque);
+	
+	if (level_pt < 0){
+		level_pt = 0;
+		printf("level in mm: %d\n\r", level_pt);
+	}
 	
 	
 	return (int)real_volume;

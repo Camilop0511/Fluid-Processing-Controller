@@ -33,13 +33,13 @@
             <br>
 
             <p>
-                <label for="tmp">Please enter the desired temperature (23&deg;C - 30&deg;C):</label>
-                <input type="text" id="temp" name="temp" pattern="^(2[3-9]|[3-9][0-9]|30)$" 
-                onblur="requiredf(this)" placeholder="25" title="Values from 23 to 30 only" required> &deg;C
+                <label for="tmp">Please enter the desired temperature (23&deg;C - 27&deg;C):</label>
+                <input type="text" id="temp" name="temp" pattern="^^(2[3-7]|[23]0)$" 
+                onblur="requiredf(this)" placeholder="25" title="Values from 23 to 27 only" required> &deg;C
 
             </p>
             <p>
-                <label for="hres">Please enter the desired power percentage for heating resistor (80% - 100% is recommended):</label>
+                <label for="hres">Please enter the desired power percentage for heating resistor (95% - 100% is recommended):</label>
                 <input type="text" id="hres" name="hres" pattern="^(2[0-9]|[3-9][0-9]|100)$" 
                 onblur="requiredf(this)" placeholder="50" title="Values from 20 to 100 only" required> %
 

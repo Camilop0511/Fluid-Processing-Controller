@@ -8,14 +8,14 @@
         <form action="formresults.php" method="POST">
 
             <p>
-                <label for="t1">Please provide percentage of liquid for liquid 1:</label>
-                <input type="text" id="tank1" name="tank1" pattern="^([1-9]|[1-9][0-9]|100)$" 
-                onblur="requiredf(this)" placeholder="50" title="Values from 0 to 100 only" required> %
+                <label for="t1">Please provide percentage of liquid for liquid 1 (10% - 100%):</label>
+                <input type="text" id="tank1" name="tank1" pattern="^(1[0-9]|[2-9][0-9]|100)$" 
+                onblur="requiredf(this)" placeholder="50" title="Values from 10 to 100 only" required> %
             </p>
 
             <p>
-                <label for="t2">Please provide quantity of liquid for liquid 2:</label>
-                <input type="text" id="tank2" name="tank2" pattern="^([1-9]|[1-9][0-9]|100)$" 
+                <label for="t2">Please provide quantity of liquid for liquid 2 (10% - 100%):</label>
+                <input type="text" id="tank2" name="tank2" pattern="^(1[0-9]|[2-9][0-9]|100)$" 
                 onblur="requiredf(this)" placeholder="50" title="Values from 0 to 100 only" required> %
             </p>
             <br>
@@ -23,17 +23,7 @@
             <p>
                 <label for="wp1">Please provide a percentage value for Water Pump 1 speed (30% - 100%):</label>
                 <input type="text" id="water_p1" name="water_p1" pattern="^([3-9][0-9]|[1-9][0-9]{2})$" 
-                onblur="requiredf(this)" placeholder="100" title="Values from 30 to 100 only" required> %
-                <span id="req" style="color:red; font-weight:bold; display:none"> 
-                    *This field is required </span> 
-                
-                <!--Event handler (HTML DOM) that uses onblur event to make req text visible-->
-                <script>
-                    function requiredf(elem){
-                        if (elem.value == "")
-                            document.getElementById("req").style.display = "block";
-                    }
-                </script>    
+                onblur="requiredf(this)" placeholder="100" title="Values from 30 to 100 only" required> %    
             </p>
             <p>
                 <label for="wp2">Please provide a percentage value for Water Pump 2 speed (30% - 100%):</label>

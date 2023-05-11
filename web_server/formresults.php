@@ -224,19 +224,3 @@
    fclose($serialPort);
 ?>
 
-<?php
-// include the file with the $data array
-include 'serial_read.php';
-
-// create an array to hold the retrieved data
-$data_array = array();
-
-// retrieve each value from the $data array and add it to the new array
-foreach ($data as $value) {
-    $data_array[] = $value;
-}
-
-// encode the new array as a JSON string and echo it
-$json_string = json_encode($data_array);
-//echo $json_string;
-?>

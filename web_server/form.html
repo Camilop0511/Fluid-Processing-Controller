@@ -20,6 +20,19 @@
             </p>
             <br>
 
+            <script>
+                function checkSum() {
+                    var tank1 = parseInt(document.getElementById("tank1").value);
+                    var tank2 = parseInt(document.getElementById("tank2").value);
+                    var sum = tank1 + tank2;
+                    if (sum >= 90) {
+                        alert("The sum of tank1 and tank2 must be less than 90.");
+                        document.getElementById("tank1").value = "";
+                        document.getElementById("tank2").value = "";
+                    }
+                }
+            </script>
+
             <p>
                 <label for="wp1">Please provide a percentage value for Water Pump 1 speed (30% - 75%):</label>
                 <input type="text" id="water_p1" name="water_p1" pattern="^^([3-6][0-9]|7[0-5]|30)$" 

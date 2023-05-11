@@ -19,7 +19,7 @@
                 onblur="requiredf(this); checkSum()" placeholder="50" title="Values from 30 to 100 only" required> %
             </p>
             <br>
-
+            
             <script>
                 function checkSum() {
                     var tank1 = parseInt(document.getElementById("tank1").value);
@@ -36,7 +36,15 @@
             <p>
                 <label for="wp1">Please provide a percentage value for Water Pump 1 speed (30% - 75%):</label>
                 <input type="text" id="water_p1" name="water_p1" pattern="^([3-6][0-9]|7[0-5]|30)$" 
-                onblur="requiredf(this)" placeholder="50" title="Values from 30 to 100 only" required> %    
+                onblur="requiredf(this)" placeholder="50" title="Values from 30 to 100 only" required> %   
+
+                <!--Event handler (HTML DOM) that uses onblur event to make req text visible-->
+                <script>
+                    function requiredf(elem){
+                        if (elem.value == "")
+                            document.getElementById("req").style.display = "block";
+                    }
+                </script> 
             </p>
             <p>
                 <label for="wp2">Please provide a percentage value for Water Pump 2 speed (30% - 75%):</label>

@@ -1,7 +1,7 @@
 # Fluid Processing Controller 
 
 ## Overview 
-This is the fin
+This project is a Fluid Processing Controller designed to emulate a small-scale industrial process. The system involves acquiring and controlling process variables with fluids, utilizing electronic components for fluid level and temperature measurements, such as a MPX2010 pressure sensor for precise liquid level detection and a LM35DZ temperature sensor for accurate temperature monitoring. 
 
 ## Repository Structure
 - `src/`: Final version of the code.

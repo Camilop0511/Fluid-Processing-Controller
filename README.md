@@ -17,6 +17,6 @@ Operationally, the system functions sequentially, ensuring meticulous control ov
     - `sequential_control/`: Sequential control tests.
     - `serial_communication/`: Code test for serial communication between the microcontroller and Raspberry Pi.
   - `web_server/`: Development history of the web server code.
-- `docs/`: Documentation files.
+- `docs/`: Documentation files such as circuit designs, PCB designs, PCB illustrations, and a technical manual.
 
 

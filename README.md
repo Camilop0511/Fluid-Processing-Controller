@@ -1,7 +1,7 @@
 # Fluid Processing Controller 
 
 ## Overview 
-This project is a Fluid Processing Controller designed to emulate a small-scale industrial process. The system involves acquiring and controlling process variables related to fluids. It uses electronic components for fluid level and temperature measurements, including an MPX2010 pressure sensor for precise liquid level detection and an LM35DZ temperature sensor for accurate temperature monitoring.
+This project implements a Fluid Processing Controller designed to simulate a small-scale industrial process, focusing on real-time monitoring, sequential control, and hardware–software integration. The system involves acquiring and controlling process variables related to fluids. It uses electronic components for fluid level and temperature measurements, including an MPX2010 pressure sensor for precise liquid level detection and an LM35DZ temperature sensor for accurate temperature monitoring.
 
 The system features two storage tanks and a processing tank, managed by two water pumps and a heating resistor. It has both a physical control panel and a web-based interface for control. An ATmega8515 serves as the main controller, facilitating bidirectional communication with a Raspberry Pi. This setup allows users to input parameters and monitor the process through a web page hosted by the Raspberry Pi. 
 

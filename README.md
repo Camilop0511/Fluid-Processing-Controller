@@ -5,7 +5,7 @@ This project implements a Fluid Processing Controller designed to simulate a sma
 
 The system features two storage tanks and a processing tank, managed by two water pumps and a heating resistor. It has both a physical control panel and a web-based interface for control. An ATmega8515 serves as the main controller, facilitating bidirectional communication with a Raspberry Pi. This setup allows users to input parameters and monitor the process through a web page hosted by the Raspberry Pi. 
 
-Operationally, the system functions sequentially, ensuring meticulous control over each stage of fluid processing. This includes tasks such as filling, heating, and final delivery of the processed fluid. 
+Operationally, the system functions sequentially, ensuring meticulous control over each stage of fluid processing. This includes tasks such as filling, heating, and final delivery of the processed fluid.
 
 ## Repository Structure
 - `src/`: Final version of the code.
